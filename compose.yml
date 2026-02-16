@@ -11,3 +11,16 @@ services:
     env_file: ./.env
     ports:
       - 8081:8081
+    init: true
+  go-server:
+    container_name: myapp-go-server
+    tty: true
+    build:
+      context: ./GoServer
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./GoServer:/GoServer
+    env_file: ./.env
+    ports:
+      - 8080:8080
+    init: true
