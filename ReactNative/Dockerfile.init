@@ -1,0 +1,13 @@
+FROM node:24-slim
+
+WORKDIR /ReactNative
+
+COPY . .
+
+RUN apt update && apt install -y bash
+
+RUN chown -R node:node /ReactNative
+
+USER node
+
+CMD ["yarn", "install"]

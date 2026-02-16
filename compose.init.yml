@@ -3,7 +3,7 @@ services:
     container_name: myapp-react-native-init
     build:
       context: ./ReactNative
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile.init
     volumes:
       - ./ReactNative:/ReactNative
     env_file: ./.env
