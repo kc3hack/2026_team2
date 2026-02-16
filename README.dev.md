@@ -16,7 +16,7 @@ docker compose version
 
 ### Step2: 環境変数を設定する
 
-1. `.env.example` ファイルの名前を`.env`に変更する
+1. `.env.example` ファイルのコピーを作成して名前を`.env`に変更する
 2. 端末のIPアドレスを`xxx.xxx.xxx.xxx`に入れる
 
 - Windows

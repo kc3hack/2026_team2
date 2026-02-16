@@ -4,6 +4,8 @@ WORKDIR /ReactNative
 
 COPY . .
 
+RUN rm -rf node_modules
+
 RUN apt update && apt install -y bash
 
 RUN yarn global add expo
