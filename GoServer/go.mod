@@ -1,6 +1,6 @@
 module superalarm
 
-go 1.26
+go 1.25
 
 require github.com/labstack/echo/v4 v4.12.0
 
