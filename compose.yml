@@ -20,9 +20,23 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - ./GoServer:/GoServer
+      # - shared-data:/GoServer/shared
+      - ./shared:/GoServer/shared
     env_file: ./.env
     ports:
       - 8080:8080
+    init: true
+  python-ai:
+    container_name: myapp-python-ai
+    tty: true
+    build:
+      context: ./PythonAI
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./PythonAI:/PythonAI
+      # - shared-data:/PythonAI/shared
+      - ./shared:/PythonAI/shared
+    env_file: ./.env
     init: true
   mysql:
     container_name: myapp-mysql
@@ -48,4 +62,5 @@ services:
     depends_on:
       - mysql
 volumes:
+  shared-data:
   mysql-data:
