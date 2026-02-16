@@ -36,6 +36,29 @@ Wireless LAN adapter Wi-Fi:
 
 - Macはよしなに
 
+### Step2.5: セットアップ<追記>
+
+```
+docker compose -f ./compose.init.yml up react-native --build
+```
+
+コマンドでnode_modulesを埋める
+ターミナルの実行が止まったら（下のコマンドまで出力されたら）`CTRL+C`で実行を止める
+
+```
+[+] Running 2/2
+ ✔ react-native                       Built                                                                                                             0.0s
+ ✔ Container myapp-react-native-init  Created                                                                                                           0.0s
+Attaching to myapp-react-native-init
+myapp-react-native-init  | yarn run v1.22.22
+myapp-react-native-init  | $ expo start
+myapp-react-native-init  | Starting project at /ReactNative
+myapp-react-native-init  | React Compiler enabled
+myapp-react-native-init  | Starting Metro Bundler
+myapp-react-native-init  | Waiting on http://localhost:8081
+myapp-react-native-init  | Logs for your project will appear below.
+```
+
 ### Step3: 立ち上げ
 
 ```

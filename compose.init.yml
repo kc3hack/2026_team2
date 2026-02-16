@@ -1,0 +1,11 @@
+services:
+  react-native:
+    container_name: myapp-react-native-init
+    build:
+      context: ./ReactNative
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./ReactNative:/ReactNative
+    env_file: ./.env
+    ports:
+      - 8081:8081
