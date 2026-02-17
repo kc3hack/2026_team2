@@ -1,35 +1,48 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Tabs } from "expo-router";
+import { MAINCOLORS } from "@/constants/colors";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+    const iconSize = 30
+    return (
+        <Tabs
+        initialRouteName="home"
+        
+        screenOptions={{
+            tabBarShowLabel: false,
+            headerShown: false,
+            tabBarStyle: {
+                backgroundColor: MAINCOLORS.Background,
+                paddingTop: 5,
+            },
+            tabBarActiveTintColor: "white", 
+            tabBarInactiveTintColor: "rgba(255,255,255,0.3)",
         }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+        >
+        <Tabs.Screen
+            name="data"
+            options={{
+                tabBarIcon: ({ color }) => (
+                    <MaterialIcons name="analytics" size={iconSize} color={color} />
+                ),
+            }}
+        />
+        <Tabs.Screen
+            name="home"
+            options={{
+                tabBarIcon: ({ color }) => (
+                    <MaterialIcons name="alarm" size={iconSize} color={color} />
+                ),
+            }}
+        />
+        <Tabs.Screen
+            name="connect"
+            options={{
+                tabBarIcon: ({ color }) => (
+                    <MaterialIcons name="cable" size={iconSize} color={color} />
+                ),
+            }}
+        />
+        </Tabs>
+    );
 }

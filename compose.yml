@@ -10,4 +10,8 @@ services:
       - ./ReactNative:/ReactNative
     env_file: ./.env
     ports:
-      - 8081:8081
+      - "8081:8081"
+    command: 
+      - expo
+      - start
+      - --tunnel
