@@ -16,7 +16,7 @@ docker compose version
 
 ### Step2: 環境変数を設定する
 
-1. `.env.example` ファイルの名前を`.env`に変更する
+1. `.env.example` ファイルのコピーを作成して名前を`.env`に変更する
 2. 端末のIPアドレスを`xxx.xxx.xxx.xxx`に入れる
 
 - Windows
@@ -35,6 +35,14 @@ Wireless LAN adapter Wi-Fi:
 ```
 
 - Macはよしなに
+
+### Step2.5: セットアップ<追記>
+
+```
+docker compose -f ./compose.init.yml up react-native --build
+```
+
+コマンドでnode_modulesを埋める
 
 ### Step3: 立ち上げ
 
