@@ -6,8 +6,8 @@ services:
       context: ./ReactNative
       dockerfile: ./Dockerfile
     volumes:
-      - /ReactNative/node_modules
       - ./ReactNative:/ReactNative
+      - node_modules:/ReactNative/node_modules
     env_file: ./.env
     ports:
       - 8081:8081
@@ -64,3 +64,4 @@ services:
 volumes:
   shared-data:
   mysql-data:
+  node_modules:
