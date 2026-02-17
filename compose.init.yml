@@ -9,3 +9,4 @@ services:
     env_file: ./.env
     ports:
       - 8081:8081
+    init: true
