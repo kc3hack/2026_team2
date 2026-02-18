@@ -1,0 +1,15 @@
+# Air - ホットリロード用の一時ファイル
+tmp/
+build-errors.log
+
+# Go関連
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# ベンダー
+vendor/
