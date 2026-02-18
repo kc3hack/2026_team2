@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import { MAINCOLORS } from "@/constants/colors";
 import Title from "@/components/ui/title";
 
-export default function Data() {
+export default function Settings() {
   return (
     <View
       style={{
@@ -14,7 +14,7 @@ export default function Data() {
         gap: 24,
       }}
     >
-      <Title>データ</Title>
+      <Title>設定</Title>
     </View>
   );
 }
