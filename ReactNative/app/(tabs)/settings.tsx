@@ -3,9 +3,11 @@ import { MAINCOLORS } from "@/constants/colors";
 import Title from "@/components/ui/title";
 import { SettingItem, SettingSection } from "@/components/ui/Setting";
 import { useSerialPort } from "@/hooks/useSerialPort";
+import { useAudioLevel } from "@/hooks/useAudioLevel";
 
 export default function Settings() {
   const { serialState, trySendData } = useSerialPort();
+  const { volume } = useAudioLevel();
 
   // 接続状態を日本語に変換
   const getConnectionStatusText = () => {
@@ -75,6 +77,7 @@ export default function Settings() {
       <SettingSection title="音声ファイル">
         <SettingItem title="ファイル状況状況"></SettingItem>
         <SettingItem title="再生テスト" onPress={() => {}} />
+        <SettingItem title="音量">{volume}</SettingItem>
       </SettingSection>
       <SettingSection title="学習データ">
         <SettingItem title="強制再取得" onPress={() => {}} />
