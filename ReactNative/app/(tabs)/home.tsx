@@ -26,7 +26,6 @@ export default function Home() {
         }}
       />
       <Button>stop</Button>
-      <Button onPress={setData}>アラーム取得</Button>
     </View>
   );
 }
