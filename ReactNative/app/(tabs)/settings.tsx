@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { MAINCOLORS } from "@/constants/colors";
 import Title from "@/components/ui/title";
 import { SettingItem, SettingSection } from "@/components/ui/Setting";
@@ -65,34 +65,36 @@ export default function Settings() {
       }}
     >
       <Title>設定</Title>
-      <SettingSection title="IoT接続">
-        <SettingItem title="接続状況">
-          <Text
-            style={{
-              color: getConnectionStatusColor(),
-              fontSize: 16,
-              fontWeight: "600",
-            }}
-          >
-            {getConnectionStatusText()}
-          </Text>
-        </SettingItem>
-        <SettingItem title="接続をテスト" onPress={handleConnectionTest} />
-      </SettingSection>
-      {/* 音量レベルの表示（デバッグ用） */}
-      <SettingSection title="音量レベル">
-        <SettingItem title="現在の音量レベル">
-          <Text
-            style={{
-              color: getConnectionStatusColor(),
-              fontSize: 16,
-              fontWeight: "600",
-            }}
-          >
-            {volume}
-          </Text>
-        </SettingItem>
-      </SettingSection>
+      <ScrollView>
+        <SettingSection title="IoT接続">
+          <SettingItem title="接続状況">
+            <Text
+              style={{
+                color: getConnectionStatusColor(),
+                fontSize: 16,
+                fontWeight: "600",
+              }}
+            >
+              {getConnectionStatusText()}
+            </Text>
+          </SettingItem>
+          <SettingItem title="接続をテスト" onPress={handleConnectionTest} />
+        </SettingSection>
+        {/* 音量レベルの表示（デバッグ用） */}
+        <SettingSection title="音量レベル">
+          <SettingItem title="現在の音量レベル">
+            <Text
+              style={{
+                color: getConnectionStatusColor(),
+                fontSize: 16,
+                fontWeight: "600",
+              }}
+            >
+              {volume}
+            </Text>
+          </SettingItem>
+        </SettingSection>
+      </ScrollView>
     </View>
   );
 }
