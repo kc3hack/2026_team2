@@ -72,6 +72,13 @@ export default function Settings() {
         </SettingItem>
         <SettingItem title="接続をテスト" onPress={handleConnectionTest} />
       </SettingSection>
+      <SettingSection title="音声ファイル">
+        <SettingItem title="ファイル状況状況"></SettingItem>
+        <SettingItem title="再生テスト" onPress={() => {}} />
+      </SettingSection>
+      <SettingSection title="学習データ">
+        <SettingItem title="強制再取得" onPress={() => {}} />
+      </SettingSection>
     </View>
   );
 }

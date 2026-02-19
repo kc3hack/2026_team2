@@ -3,7 +3,6 @@ import { useState } from "react";
 import Button from "@/components/ui/Button";
 import TimeBox from "@/components/ui/TimeBox";
 import { MAINCOLORS } from "@/constants/colors";
-import { useAlarm } from "@/hooks/useAlarm";
 import { setData } from "@/utils/alarm";
 import Title from "@/components/ui/title";
 
@@ -27,8 +26,7 @@ export default function Home() {
         }}
       />
       <Button>stop</Button>
-      <Button text="アラーム取得" onPress={setData} />
-      <Button text="音声再生" onPress={() => setVolume(50)} />
+      <Button onPress={setData}>アラーム取得</Button>
     </View>
   );
 }
