@@ -1,31 +1,36 @@
 // components/ui/Button.tsx
 import { Pressable, Text } from "react-native";
-import { BtnColors } from "@/constants/colors";
+import { BtnColors, FontColors } from "@/constants/colors";
 
 type Props = {
-    text: string;
-    onPress?: () => void;
+  children?: React.ReactNode;
+  onPress?: () => void;
+  disabled?: boolean;
 };
 
-export default function Button({ text, onPress }: Props) {
-    return (
-        <Pressable
-        onPress={onPress}
+export default function Button({ children, onPress, disabled }: Props) {
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={disabled}
+      style={{
+        backgroundColor: disabled ? BtnColors.disabled : BtnColors.maincolors,
+        alignSelf: "center",
+        paddingVertical: 12,
+        paddingHorizontal: 60,
+        borderRadius: 12,
+        alignItems: "center",
+      }}
+    >
+      <Text
         style={{
-            backgroundColor: BtnColors.maincolors,
-            position: "absolute",
-            bottom: 80, 
-            alignSelf: "center", 
-            paddingVertical: 14,
-            paddingHorizontal: 40,
-            borderRadius: 15,
-            alignItems: "center",
-            width: 170,
+          color: disabled ? FontColors.disabled : FontColors.maincolors,
+          fontSize: 24,
+          fontWeight: "bold",
         }}
-        >
-        <Text style={{ color: "white", fontSize: 16, fontWeight: "600" }}>
-            {text}
-        </Text>
-        </Pressable>
-    );
+      >
+        {children}
+      </Text>
+    </Pressable>
+  );
 }
