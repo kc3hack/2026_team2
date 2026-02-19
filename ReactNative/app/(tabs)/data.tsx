@@ -1,19 +1,20 @@
 import { View, Text } from "react-native";
-import ScreenTitle from "@/components/ScreenTitle";
 import { MAINCOLORS } from "@/constants/colors";
+import Title from "@/components/ui/title";
 
 export default function Data() {
-    return  (
-        <View
-        style={{
-            flex: 1,
-            backgroundColor: MAINCOLORS.Background,
-            padding: 16,
-        }}
-        >
-        <ScreenTitle title="睡眠データ" />
-        <Text>aaaa</Text>
-
-        </View>
-    )
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: MAINCOLORS.Background,
+        // justifyContent: "center",
+        alignItems: "center",
+        paddingTop: 108,
+        gap: 24,
+      }}
+    >
+      <Title>データ</Title>
+    </View>
+  );
 }

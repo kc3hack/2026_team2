@@ -1,0 +1,77 @@
+import { View, Text } from "react-native";
+import { MAINCOLORS } from "@/constants/colors";
+import Title from "@/components/ui/title";
+import { SettingItem, SettingSection } from "@/components/ui/Setting";
+import { useSerialPort } from "@/hooks/useSerialPort";
+
+export default function Settings() {
+  const { serialState, trySendData } = useSerialPort();
+
+  // 接続状態を日本語に変換
+  const getConnectionStatusText = () => {
+    switch (serialState) {
+      case "connected":
+        return "接続中";
+      case "disconnected":
+        return "未接続";
+      case "error":
+        return "エラー";
+      default:
+        return "不明";
+    }
+  };
+
+  // 接続状態に応じた色を取得
+  const getConnectionStatusColor = () => {
+    switch (serialState) {
+      case "connected":
+        return "#4CAF50"; // 緑
+      case "disconnected":
+        return "#FF9800"; // オレンジ
+      case "error":
+        return "#F44336"; // 赤
+      default:
+        return "#9E9E9E"; // グレー
+    }
+  };
+
+  // 接続テスト（0x31を送信）
+  const handleConnectionTest = async () => {
+    try {
+      await trySendData("0x31");
+      console.log("Connection test: 0x31 sent successfully");
+    } catch (error) {
+      console.error("Connection test failed:", error);
+    }
+  };
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: MAINCOLORS.Background,
+        // justifyContent: "center",
+        alignItems: "center",
+        paddingTop: 108,
+        paddingHorizontal: 24,
+        gap: 24,
+      }}
+    >
+      <Title>設定</Title>
+      <SettingSection title="IoT接続">
+        <SettingItem title="接続状況">
+          <Text
+            style={{
+              color: getConnectionStatusColor(),
+              fontSize: 16,
+              fontWeight: "600",
+            }}
+          >
+            {getConnectionStatusText()}
+          </Text>
+        </SettingItem>
+        <SettingItem title="接続をテスト" onPress={handleConnectionTest} />
+      </SettingSection>
+    </View>
+  );
+}

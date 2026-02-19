@@ -1,5 +1,10 @@
 import { Stack } from "expo-router";
+import { SerialPortProvider } from "../contexts/SerialPortContext";
 
 export default function RootLayout() {
-  return <Stack screenOptions={{ headerShown: false, }} />;
+  return (
+    <SerialPortProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </SerialPortProvider>
+  );
 }
