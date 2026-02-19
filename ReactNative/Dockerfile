@@ -16,4 +16,4 @@ USER node
 
 RUN yarn install
 
-CMD yarn start
+CMD ["npx", "expo", "start", "--non-interactive"]
