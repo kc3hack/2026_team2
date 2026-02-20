@@ -86,11 +86,14 @@ class AlarmGA:
 
         # 1. 適応度の計算 (早いほど高い)
         
-        border=30
+        late_border=60
+        early_border=30
         pitch_learning_noise_min=-0.3
         pitch_learning_noise_max=0.3
         speed_learning_noise_min=-0.1
         speed_learning_noise_max=0.1
+        boost_s = 0.0 # スピードを上げる
+        boost_p = 0.0  # ピッチを上げる
 
         # 3. パラメータの決定（そのファイルのベストを基準にノイズを加える）
         best_cfg = self.performance_history[target_file]
@@ -100,13 +103,18 @@ class AlarmGA:
         noise_p = random.uniform(pitch_learning_noise_min, pitch_learning_noise_max)
 
         # もし起きるのが遅かったら、さらに過激に振る
-        boost = 0.2 if wake_time > border else 0.0
+        if wake_time < early_border:
+            boost_s = 0.1  # スピードを上げる
+            boost_p = 0.5  # ピッチを上げる
+        if wake_time>late_border:
+            boost_s = -0.05 # スピードを少し下げる（マイルドにしてみる）
+            boost_p = -0.2  # ピッチを少し下げる
        
         # 2. 突然変異ロジック
         new_gene = {
             "file": target_file,
-            "speed": max(1.0, min(best_cfg["speed"] + noise_s + boost, 2.0)),
-            "pitch": max(0.0, min(best_cfg["pitch"] + noise_p + (boost * 5), 8.0))
+            "speed": max(1.0, min(best_cfg["speed"] + noise_s + boost_s, 2.0)),
+            "pitch": max(0.0, min(best_cfg["pitch"] + noise_p + (boost_p * 5), 8.0))
            
         }
         

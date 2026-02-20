@@ -79,4 +79,4 @@ def run_simulation(iterations=3):
         time.sleep(1) # 動作確認しやすくするために少し待機
 
 if __name__ == "__main__":
-    run_simulation(300)
+    run_simulation(150)
