@@ -13,7 +13,7 @@ export default function Data() {
 
   useEffect(() => {
     setLabels(mockData.map(item => item.time));
-    setSleepData(mockData.map(item => item.stage));
+    setSleepData(mockData.map(item => item.score));
     }, []);
 
   return (

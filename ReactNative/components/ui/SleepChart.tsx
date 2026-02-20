@@ -1,4 +1,4 @@
-import { Dimensions,View,Text } from "react-native";
+import { Dimensions, View, Text } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 
 type Props = {
@@ -15,53 +15,44 @@ export default function SleepChart({ labels, data }: Props) {
         <View
             style={{
                 borderRadius: 20,
-                marginTop: 80,
+                marginTop: 40,
                 backgroundColor: "#ffffff",
                 overflow: "hidden",
+                width: screenWidth - 32,
+                alignSelf: "center",
             }}
         >
         <Text
             style={{
-            fontSize: 18,
-            fontWeight: "bold",
-            margin: 12,
-            textAlign: "center",
-            color: "#3CBDF4"
+                fontSize: 18,
+                fontWeight: "bold",
+                marginVertical: 16,
+                textAlign: "center",
+                color: "#3CBDF4",
             }}
         >
             本日の睡眠グラフ
         </Text>
         <LineChart
-        data={{
-            labels: labels,
-            datasets: [
-            {
-                data: data,
-            },
-            ],
-        }}
-        width={screenWidth - 20}
-        height={220}
-        yAxisInterval={1}
-        chartConfig={{
-            backgroundGradientFrom: "#ffffff",
-            backgroundGradientTo: "#ffffff",
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(60, 189, 244, ${opacity})`,
-            labelColor: () => "#333",
-        }}
-        bezier
-        withDots={false}
-        withInnerLines
-        fromZero
-        segments={1}
-        strokeWidth={3}
-        propsForBackgroundLines={{
-            stroke: "#E5E5E5",
-        }}
-        formatYLabel={(value) =>
-            Number(value) === 1 ? "レム" : "ノンレム"
-        }
+            data={{
+                labels,
+                datasets: [{ data }],
+            }}
+            width={screenWidth - 32}
+            height={220}
+            segments={1}
+            fromZero
+            chartConfig={{
+                backgroundGradientFrom: "#ffffff",
+                backgroundGradientTo: "#ffffff",
+                decimalPlaces: 0,
+                color: (opacity = 1) =>
+                `rgba(60, 189, 244, ${opacity})`,
+                labelColor: () => "#333",
+            }}
+            formatYLabel={(value) => {
+                return Number(value) === 0 ? "深い" : "浅い";
+            }}
         />
         </View>
     );

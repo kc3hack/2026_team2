@@ -1,9 +1,9 @@
 export const mockData = [
-    { time: "7:00", stage: 0 },
-    { time: "7:30", stage: 1 },
-    { time: "8:00", stage: 0 },
-    { time: "8:30", stage: 1 },
-    { time: "9:00", stage: 0 },
+    { time: "7:00", score: 0 },
+    { time: "7:30", score: 1 },
+    { time: "8:00", score: 0 },
+    { time: "8:30", score: 1 },
+    { time: "9:00", score: 0 },
 ]
 
 // export const mockData = `
