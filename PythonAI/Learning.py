@@ -92,8 +92,8 @@ class AlarmGA:
         pitch_learning_noise_max=0.3
         speed_learning_noise_min=-0.1
         speed_learning_noise_max=0.1
-        boost_s = 0.0 # スピードを上げる
-        boost_p = 0.0  # ピッチを上げる
+        boost_s = 0.0 
+        boost_p = 0.0  
 
         # 3. パラメータの決定（そのファイルのベストを基準にノイズを加える）
         best_cfg = self.performance_history[target_file]
@@ -103,10 +103,10 @@ class AlarmGA:
         noise_p = random.uniform(pitch_learning_noise_min, pitch_learning_noise_max)
 
         # もし起きるのが遅かったら、さらに過激に振る
-        if wake_time < early_border:
+        if wake_time > late_border:
             boost_s = 0.1  # スピードを上げる
             boost_p = 0.5  # ピッチを上げる
-        if wake_time>late_border:
+        if wake_time < early_border:
             boost_s = -0.05 # スピードを少し下げる（マイルドにしてみる）
             boost_p = -0.2  # ピッチを少し下げる
        
