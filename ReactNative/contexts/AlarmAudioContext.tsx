@@ -62,11 +62,9 @@ export const AlarmAudioProvider: React.FC<{ children: React.ReactNode }> = ({
 
     try {
       // 音声ファイルのURIを取得
-      const uri = await getAudioFileUri();
+      let uri = await getAudioFileUri();
       if (!uri) {
-        console.log("No music file available yet");
-        isLoadingRef.current = false;
-        return;
+        uri = "@assets/music/default.wav"; // デフォルトの音声ファイルパス
       }
 
       console.log("Loading sound from:", uri);

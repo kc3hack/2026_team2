@@ -43,7 +43,7 @@ func main() {
 
 	e.POST("/get", func(c echo.Context) error {
 		// JSONファイルを読み込む
-		filePath := "./shared/py2go/data/02DCF83E-769B-49F6-9172-4E05F5C2391D.json"
+		filePath := "./shared/py2go/data/F58EA70F-F0CB-43C8-B4D5-5A5BA4DAC148.json"
 		data, err := os.ReadFile(filePath)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{
