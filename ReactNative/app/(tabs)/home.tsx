@@ -3,7 +3,7 @@ import { useState } from "react";
 import Button from "@/components/ui/Button";
 import TimeBox from "@/components/ui/TimeBox";
 import { MAINCOLORS } from "@/constants/colors";
-import { setData } from "@/utils/alarm";
+import { fetchAndSaveAlarmData } from "@/services/alarmService";
 import Title from "@/components/ui/title";
 
 export default function Home() {
