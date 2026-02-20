@@ -1,10 +1,11 @@
 import os
 import random
-import json
+
 
 # 設定
 SOUNDS_DIR = "raw_sounds/"
 GENE_FILE = "current_population.json" # 遺伝子プールを保存しておく場所
+
 
 class AlarmGA:
     def __init__(self):
@@ -14,6 +15,10 @@ class AlarmGA:
         self.available_sounds = [f for f in os.listdir(SOUNDS_DIR) if f.endswith('.wav')]
         if not self.available_sounds:
             self.available_sounds = ["default.wav"] # 予備
+        self.performance_history = {
+            f: {"best_time": float('inf'), "speed": 1.0, "pitch": 0.0} 
+            for f in self.available_sounds
+        }
         
     def get_initial_gene(self):
         """初回用のランダムな遺伝子を生成"""
@@ -33,38 +38,52 @@ class AlarmGA:
             "wake_up_time": 45  # 秒
         }
         """
+
+        fname = last_result["file"]
+        wake_time = last_result["wake_up_time"]
+        # 1. 最速記録の更新判定
+        if wake_time < self.performance_history[fname]["best_time"]:
+            self.performance_history[fname] = {
+                "best_time": wake_time,
+                "speed": last_result["speed"],
+                "pitch": last_result["pitch"]
+            }
+            print(f"   >>> Record Updated for {fname}!")
+
+        best_file = min(self.performance_history, key=lambda k: self.performance_history[k]["best_time"])
+        if random.random() < 0.5 and self.performance_history[best_file]["best_time"] < 100:
+            target_file = best_file
+        else:
+            target_file = random.choice(self.available_sounds)
+        
+
         # 1. 適応度の計算 (早いほど高い)
-        wake_up_time = last_result.get("wake_up_time", 60)
+        
         border=30
-        pitch_learning_rate_min=0.1
-        pitch_learning_rate_max=0.3
-        speed_learning_rate_min=0.1
-        speed_learning_rate_max=0.3
+        pitch_learning_noise_min=-0.3
+        pitch_learning_noise_max=0.3
+        speed_learning_noise_min=-0.1
+        speed_learning_noise_max=0.1
+
+        # 3. パラメータの決定（そのファイルのベストを基準にノイズを加える）
+        best_cfg = self.performance_history[target_file]
+        
+        # 基本ノイズ（音の質を変える）
+        noise_s = random.uniform(-speed_learning_noise_min, speed_learning_noise_max)
+        noise_p = random.uniform(pitch_learning_noise_min, pitch_learning_noise_max)
+
+        # もし起きるのが遅かったら、さらに過激に振る
+        boost = 0.2 if wake_time > border else 0.0
        
         # 2. 突然変異ロジック
         new_gene = {
-            "file": last_result.get("file", self.available_sounds[0]),
-            "speed": last_result.get("speed", 1.0),
-            "pitch": last_result.get("pitch", 0.0)
+            "file": target_file,
+            "speed": max(1.0, min(best_cfg["speed"] + noise_s + boost, 2.0)),
+            "pitch": max(0.0, min(best_cfg["pitch"] + noise_p + (boost * 5), 8.0))
+           
         }
-        new_gene = last_result.copy()
-       
-
-        # 起きるのが遅かったら(適応度が低い)、より過激に変化させる
-        if wake_up_time > border: # 30秒以上かかったら
-            new_gene["speed"] += random.uniform(speed_learning_rate_min, speed_learning_rate_max)
-            new_gene["pitch"] += random.uniform(pitch_learning_rate_min, pitch_learning_rate_max)
-            # 10%の確率でファイル自体を変える（突然変異）
-            if random.random() < 0.1:
-                new_gene["file"] = random.choice(self.available_sounds)
-        else:
-            # 【報酬】すぐ起きられた：少しだけ値を下げて、耳への優しさを探る
-            new_gene["speed"] -= random.uniform(speed_learning_rate_min, speed_learning_rate_max)
-            new_gene["pitch"] -= random.uniform(pitch_learning_rate_min, pitch_learning_rate_max)
         
-        # 値の制限 (速度2倍まで、とか)
-        new_gene["speed"] = min(new_gene["speed"], 2.0)
-        new_gene["pitch"] = min(new_gene["pitch"], 8.0)
+
 
         return new_gene
 # GoからのJSONを監視し、設計図を吐き出すメインループをここに記述

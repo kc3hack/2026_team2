@@ -1,6 +1,6 @@
 import librosa
 import soundfile as sf
-from learning import AlarmGA
+from Learning import AlarmGA
 import os
 
 def render_audio(gene):
@@ -26,12 +26,12 @@ if __name__ == "__main__":
     # 【修正ポイント】直接ファイル名を指定せず、今あるファイルから取得する
     initial_gene = engine.get_initial_gene()
     # 1. Goから届いた想定のデータ (本来はAPIや引数で受け取る)
-    last_data_from_go = {
-        "file": "emergency.wav",
-        "speed": 1.0,
-        "pitch": 0.0,
-        "wake_up_time": 45  # 30秒以上かかったという設定
-    }
+    #last_data_from_go = {
+        #"file": "emergency.wav",
+        #"speed": 1.0,
+        #"pitch": 0.0,
+        #"wake_up_time": 45  # 30秒以上かかったという設定
+    #}
 
     # 2. 学習インスタンスの作成 (カッコが必要！)
    

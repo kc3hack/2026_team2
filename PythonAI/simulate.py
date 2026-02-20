@@ -1,51 +1,66 @@
+import os
+import json
+import librosa
+import soundfile as sf
 import random
-from Learning import AlarmGA
+from Learning import AlarmGA  # Learning.pyからクラスをインポート
 
-def simulate_user_behavior(gene):
-    """
-    仮想ユーザー：音が激しい（Speed/Pitchが高い）ほど早く起きる
-    """
-    # 基礎起床時間（秒）
-    base_time = 100 
+# --- Generator側の関数を再定義 (整理のため) ---
+def render_audio(gene):
+    """設計図(gene)を元に実際の音ファイルを生成する"""
+    input_path = os.path.join("raw_sounds", gene["file"])
+    output_wav_name = "generated_alarm.wav"
     
-    # 補正：スピード1.0上がるごとに20秒短縮、ピッチ1.0上がるごとに3秒短縮と仮定
-    performance = (gene['speed'] * 20) + (gene['pitch'] * 3)
-    
-    # 10秒〜15秒のランダムなノイズ（体調など）
-    noise = random.uniform(-10, 15)
-    
-    wake_up_time = base_time - performance + noise
-    return max(3, wake_up_time) # 最低でも3秒はかかるとする
+    # ファイル存在チェック
+    if not os.path.exists(input_path):
+        print(f"エラー: {input_path} が見つかりません。")
+        return None
 
-def run_test(days=30):
+    print(f"--- 音声処理開始: {gene['file']} ---")
+    y, sr = librosa.load(input_path)
+    
+    # 信号処理
+    y_shifted = librosa.effects.pitch_shift(y, sr=sr, n_steps=gene['pitch'])
+    y_stretched = librosa.effects.time_stretch(y_shifted, rate=gene['speed'])
+    
+    sf.write(output_wav_name, y_stretched, sr)
+    print(f"--- 生成完了: {output_wav_name} (Pitch: {gene['pitch']:.2f}, Speed: {gene['speed']:.2f}) ---")
+    return output_wav_name
+
+# --- テストメイン処理 ---
+if __name__ == "__main__":
+    # 1. 準備: テスト用の音声ファイルがあるか確認
+    if not os.path.exists("raw_sounds"):
+        os.makedirs("raw_sounds")
+        print("raw_sounds フォルダを作成しました。テスト用の .wav ファイルを入れてください。")
+    
+    # 2. 学習エンジンの初期化
     engine = AlarmGA()
     
-    # 初期状態
-    current_gene = {
-        "file": "emergency.wav",
-        "speed": 1.0,
-        "pitch": 0.0
-    }
-    
-    print(f"{'日目':<4} | {'起床時間':<6} | {'Speed':<5} | {'Pitch':<5} | {'ファイル'}")
-    print("-" * 50)
+    if not engine.available_sounds or engine.available_sounds == ["default.wav"]:
+        print("警告: raw_sounds 内に音声ファイルがないため、処理を中断します。")
+    else:
+        # --- シミュレーションループ (3回回してみる) ---
+        for i in range(1, 4):
+            print(f"\n=== ターン {i} ===")
+            
+            # 3. Goサーバーからデータが送られてきたと仮定 (シミュレーション)
+            # 実際はここでWake_up_timeがランダムに変化する
+            simulated_go_data = {
+                "file": random.choice(engine.available_sounds),
+                "speed": round(random.uniform(1.0, 1.5), 2),
+                "pitch": round(random.uniform(0.0, 4.0), 2),
+                "wake_up_time": random.randint(10, 60) # 秒
+            }
+            print(f"Goからのデータ: {simulated_go_data}")
 
-    for day in range(1, days + 1):
-        # 1. ユーザーが起きる（シミュレート）
-        wake_time = simulate_user_behavior(current_gene)
-        
-        # 結果を表示
-        print(f"{day:<5} | {wake_time:>6.1f}秒 | {current_gene['speed']:>5.2f} | {current_gene['pitch']:>5.1f} | {current_gene['file']}")
-        
-        # 2. 学習（次の日の設定を決定）
-        # Goから返ってくる形式に合わせて辞書を作る
-        last_result = {
-            "file": current_gene["file"],
-            "speed": current_gene["speed"],
-            "pitch": current_gene["pitch"],
-            "wake_up_time": wake_time
-        }
-        current_gene = engine.evolve(last_result)
+            # 4. Learning.py (evolve) を実行して次のパラメータを決定
+            print("学習中...")
+            next_gene = engine.evolve(simulated_go_data)
+            print(f"次回の設計図: {next_gene}")
 
-if __name__ == "__main__":
-    run_test(days=30)
+            # 5. Generator.py (render_audio) を実行して音声生成
+            generated_file = render_audio(next_gene)
+            
+            if generated_file:
+                print(f"成功: {generated_file} が更新されました。")
