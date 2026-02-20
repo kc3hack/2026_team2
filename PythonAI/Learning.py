@@ -1,10 +1,11 @@
 import os
 import random
+import json
 
 
 # 設定
 SOUNDS_DIR = "raw_sounds/"
-GENE_FILE = "current_population.json" # 遺伝子プールを保存しておく場所
+INPUT_JSON_PATH = "shared/go2py/input.json"
 
 
 class AlarmGA:
@@ -27,6 +28,32 @@ class AlarmGA:
             "speed": 1.0,
             "pitch": 0.0
         }
+    
+    def load_input_from_go(self):
+        """shared/go2py 内のJSONを読み込んで、Pythonで扱いやすい形式に変換する"""
+        if not os.path.exists(INPUT_JSON_PATH):
+            print(f"Waiting for input file at {INPUT_JSON_PATH}...")
+            return None
+        
+        try:
+            with open(INPUT_JSON_PATH, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            # JSONのキーを内部ロジック用にマッピング
+            # 注意: ファイル名に .wav が付いていない場合は補完が必要
+            fname = data["last-base-music"]
+            if not fname.endswith('.wav'):
+                fname += ".wav"
+
+            return {
+                "file": fname,
+                "speed": float(data["last-speed"]),
+                "pitch": float(data["last-pitch"]),
+                "wake_up_time": int(data["wake_up_time"])
+            }
+        except Exception as e:
+            print(f"Error reading JSON: {e}")
+            return None
 
     def evolve(self, last_result):
         """

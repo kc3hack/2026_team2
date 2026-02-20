@@ -1,66 +1,82 @@
 import os
 import json
-import librosa
-import soundfile as sf
+import time
+import shutil
 import random
-from Learning import AlarmGA  # Learning.pyからクラスをインポート
+from Learning import AlarmGA
+import generator  # generator.py をモジュールとしてインポート
 
-# --- Generator側の関数を再定義 (整理のため) ---
-def render_audio(gene):
-    """設計図(gene)を元に実際の音ファイルを生成する"""
-    input_path = os.path.join("raw_sounds", gene["file"])
-    output_wav_name = "generated_alarm.wav"
-    
-    # ファイル存在チェック
-    if not os.path.exists(input_path):
-        print(f"エラー: {input_path} が見つかりません。")
-        return None
+# パス設定
+GO2PY_DIR = "shared/go2py"
+PY2GO_DATA_DIR = "shared/py2go/data"
+PY2GO_MUSIC_DIR = "shared/py2go/music"
+INPUT_JSON = os.path.join(GO2PY_DIR, "input.json")
 
-    print(f"--- 音声処理開始: {gene['file']} ---")
-    y, sr = librosa.load(input_path)
+def setup_directories():
+    """必要なディレクトリをすべて初期化する"""
+    for path in [GO2PY_DIR, PY2GO_DATA_DIR, PY2GO_MUSIC_DIR, "raw_sounds"]:
+        os.makedirs(path, exist_ok=True)
     
-    # 信号処理
-    y_shifted = librosa.effects.pitch_shift(y, sr=sr, n_steps=gene['pitch'])
-    y_stretched = librosa.effects.time_stretch(y_shifted, rate=gene['speed'])
-    
-    sf.write(output_wav_name, y_stretched, sr)
-    print(f"--- 生成完了: {output_wav_name} (Pitch: {gene['pitch']:.2f}, Speed: {gene['speed']:.2f}) ---")
-    return output_wav_name
+    # テスト用のダミー音声ファイルがない場合、エラーになるので警告
+    if not os.listdir("raw_sounds"):
+        print("![注意] raw_sounds フォルダに .wav ファイルを1つ以上入れてください。")
+        return False
+    return True
 
-# --- テストメイン処理 ---
-if __name__ == "__main__":
-    # 1. 準備: テスト用の音声ファイルがあるか確認
-    if not os.path.exists("raw_sounds"):
-        os.makedirs("raw_sounds")
-        print("raw_sounds フォルダを作成しました。テスト用の .wav ファイルを入れてください。")
+def simulate_go_server(turn, last_pitch=0, last_speed=1.0):
+    """Goサーバーの挙動を模倣して input.json を書き出す"""
+    # raw_soundsにあるファイル名を取得（拡張子なし）
+    sounds = [os.path.splitext(f)[0] for f in os.listdir("raw_sounds") if f.endswith('.wav')]
+    base_music = random.choice(sounds)
     
-    # 2. 学習エンジンの初期化
+    # ユーザーが起きるまでの時間をシミュレート（回を追うごとに短くなるか試す）
+    wake_up_time = random.randint(10, 100)
+    
+    data = {
+        "last-base-music": base_music,
+        "last-pitch": last_pitch,
+        "last-speed": last_speed,
+        "wake_up_time": wake_up_time
+    }
+    
+    with open(INPUT_JSON, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=4)
+    
+    print(f"\n[Turn {turn}] --- Goサーバーがデータを送信しました ---")
+    print(f"送信内容: {data}")
+    return data
+
+def run_simulation(iterations=3):
+    if not setup_directories():
+        return
+
     engine = AlarmGA()
-    
-    if not engine.available_sounds or engine.available_sounds == ["default.wav"]:
-        print("警告: raw_sounds 内に音声ファイルがないため、処理を中断します。")
-    else:
-        # --- シミュレーションループ (3回回してみる) ---
-        for i in range(1, 4):
-            print(f"\n=== ターン {i} ===")
-            
-            # 3. Goサーバーからデータが送られてきたと仮定 (シミュレーション)
-            # 実際はここでWake_up_timeがランダムに変化する
-            simulated_go_data = {
-                "file": random.choice(engine.available_sounds),
-                "speed": round(random.uniform(1.0, 1.5), 2),
-                "pitch": round(random.uniform(0.0, 4.0), 2),
-                "wake_up_time": random.randint(10, 60) # 秒
-            }
-            print(f"Goからのデータ: {simulated_go_data}")
+    current_pitch = 0.0
+    current_speed = 1.0
 
-            # 4. Learning.py (evolve) を実行して次のパラメータを決定
-            print("学習中...")
-            next_gene = engine.evolve(simulated_go_data)
-            print(f"次回の設計図: {next_gene}")
-
-            # 5. Generator.py (render_audio) を実行して音声生成
-            generated_file = render_audio(next_gene)
+    for i in range(1, iterations + 1):
+        # 1. Goサーバーが入力ファイルを作成
+        sim_data = simulate_go_server(i, current_pitch, current_speed)
+        
+        # 2. Python側のメインロジックを実行
+        print(f"[Turn {i}] --- Pythonが学習と生成を開始します ---")
+        
+        # input.jsonを読み込んで学習
+        next_input = engine.load_input_from_go()
+        if next_input:
+            next_gene = engine.evolve(next_input)
             
-            if generated_file:
-                print(f"成功: {generated_file} が更新されました。")
+            # 音声生成と結果の書き出し
+            output_json_path = generator.render_audio(next_gene)
+            
+            # 3. 生成された結果を確認して、次のターンの入力に備える
+            with open(output_json_path, 'r', encoding='utf-8') as f:
+                res = json.load(f)
+                current_pitch = res["pitch"]
+                current_speed = res["speed"]
+                print(f"[Turn {i}] --- 完了。生成ファイル: {res['file-name']}")
+        
+        time.sleep(1) # 動作確認しやすくするために少し待機
+
+if __name__ == "__main__":
+    run_simulation(300)
