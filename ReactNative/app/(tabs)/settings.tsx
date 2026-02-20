@@ -12,7 +12,7 @@ import { Link } from "expo-router";
 
 export default function Settings() {
   const volume = useAudioLevel();
-  const { magnitude } = useAccelerometer();
+  const magnitude = useAccelerometer();
   const { serialState, trySendData } = useSerialPort();
   const { setVolume, loadAudio, isReady, isPlaying } = useAlarmAudio();
   const [isLoading, setIsLoading] = useState(false);
