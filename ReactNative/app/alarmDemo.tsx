@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useAlarmMonitor } from "../hooks/useAlarmMonitor";
 import { useAlarmAudio } from "../hooks/useAlarmAudio";
+import { useAccelerometer } from "@/hooks/useAccelerometer";
 import { useEffect } from "react";
 
 export default function HomeScreen() {
@@ -9,9 +10,9 @@ export default function HomeScreen() {
   const targetTime = new Date(now.getTime() + 31 * 60000);
   const testTarget = `${targetTime.getHours()}:${String(targetTime.getMinutes()).padStart(2, "0")}`;
 
-  const { isMonitoring, magnitude, isAlarmActive } =
-    useAlarmMonitor(testTarget);
+  const { isMonitoring, isAlarmActive } = useAlarmMonitor(testTarget);
   const { volume, setVolume } = useAlarmAudio();
+  const magnitude = useAccelerometer();
 
   useEffect(() => {
     if (isMonitoring) {

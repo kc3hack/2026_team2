@@ -8,13 +8,15 @@ import { useAlarmAudio } from "@/hooks/useAlarmAudio";
 import { useAudioLevel } from "@/hooks/useAudioLevel";
 import { useAccelerometer } from "@/hooks/useAccelerometer";
 import { fetchAndSaveAlarmData } from "@/services/alarmService";
+import { clearCache } from "@/utils/fileCache";
 import { Link } from "expo-router";
 
 export default function Settings() {
   const volume = useAudioLevel();
   const magnitude = useAccelerometer();
   const { serialState, trySendData } = useSerialPort();
-  const { setVolume, loadAudio, isReady, isPlaying } = useAlarmAudio();
+  const { setVolume, loadAudio, isReady, isPlaying, isUsingCachedAudio } =
+    useAlarmAudio();
   const [isLoading, setIsLoading] = useState(false);
   // 接続状態を日本語に変換
   const getConnectionStatusText = () => {
@@ -109,14 +111,15 @@ export default function Settings() {
 
   // ファイル状況の取得
   const getFileStatusText = () => {
-    if (isReady) {
-      return "準備完了";
+    if (!isReady) {
+      return "未準備";
     }
-    return "未準備";
+    return isUsingCachedAudio ? "カスタム音声" : "デフォルト音声";
   };
 
   const getFileStatusColor = () => {
-    return isReady ? "#4CAF50" : "#FF9800";
+    if (!isReady) return "#FF9800";
+    return isUsingCachedAudio ? "#2196F3" : "#4CAF50";
   };
 
   return (
@@ -163,11 +166,23 @@ export default function Settings() {
             title={isPlaying ? "再生停止" : "再生テスト"}
             onPress={handlePlaybackTest}
           />
-        </SettingSection>
-        <SettingSection title="学習データ">
           <SettingItem
             title={isLoading ? "取得中..." : "強制再取得"}
             onPress={isLoading ? undefined : handleRefetchData}
+          />
+          <SettingItem
+            title="データの削除"
+            onPress={async () => {
+              try {
+                await clearCache();
+                // 音声ファイルをリロードしてデフォルトに戻す
+                await loadAudio();
+                Alert.alert("成功", "データの削除が完了しました");
+              } catch (error) {
+                console.error("Failed to clear cache:", error);
+                Alert.alert("エラー", "データの削除に失敗しました");
+              }
+            }}
           />
         </SettingSection>
         {/* 音量レベルの表示（デバッグ用） */}

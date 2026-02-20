@@ -24,7 +24,7 @@ export default function Button({ children, onPress, disabled }: Props) {
     >
       <Text
         style={{
-          color: disabled ? FontColors.disabled : FontColors.maincolors,
+          color: FontColors.maincolors,
           fontSize: 24,
           fontWeight: "bold",
         }}

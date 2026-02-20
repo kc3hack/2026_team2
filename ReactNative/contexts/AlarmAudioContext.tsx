@@ -26,6 +26,8 @@ type AlarmAudioContextType = {
   isReady: boolean;
   /** 音声が再生中かどうか */
   isPlaying: boolean;
+  /** キャッシュされた音声を使用しているかどうか */
+  isUsingCachedAudio: boolean;
 };
 
 /**
@@ -45,6 +47,7 @@ export const AlarmAudioProvider: React.FC<{ children: React.ReactNode }> = ({
   const [volume, setVolumeState] = useState<number>(0);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isUsingCachedAudio, setIsUsingCachedAudio] = useState<boolean>(false);
   const soundRef = useRef<Audio.Sound | null>(null);
   const isLoadingRef = useRef<boolean>(false);
 
@@ -62,12 +65,16 @@ export const AlarmAudioProvider: React.FC<{ children: React.ReactNode }> = ({
 
     try {
       // 音声ファイルのURIを取得
-      let uri = await getAudioFileUri();
-      if (!uri) {
-        uri = "@assets/music/default.wav"; // デフォルトの音声ファイルパス
-      }
+      const cachedUri = await getAudioFileUri();
 
-      console.log("Loading sound from:", uri);
+      // デフォルトの音声ファイル（require形式）
+      const defaultAudio = require("@/assets/music/default.wav");
+
+      // キャッシュされたファイルがあればそれを使用、なければデフォルト
+      const audioSource = cachedUri ? { uri: cachedUri } : defaultAudio;
+      const usingCache = !!cachedUri;
+
+      console.log("Loading sound from:", cachedUri || "default.wav");
 
       // 既存のサウンドがあればアンロード
       if (soundRef.current) {
@@ -78,20 +85,18 @@ export const AlarmAudioProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       // サウンドオブジェクトを作成（初期状態は停止、音量0）
-      const { sound } = await Audio.Sound.createAsync(
-        { uri },
-        {
-          shouldPlay: false,
-          isLooping: true,
-          volume: 0,
-        },
-      );
+      const { sound } = await Audio.Sound.createAsync(audioSource, {
+        shouldPlay: false,
+        isLooping: true,
+        volume: 0,
+      });
 
       // OSレベルで確実にループさせる
       await sound.setIsLoopingAsync(true);
 
       soundRef.current = sound;
       setIsReady(true);
+      setIsUsingCachedAudio(usingCache);
       console.log("Sound loaded successfully");
     } catch (error) {
       console.error("Failed to load sound:", error);
@@ -204,6 +209,7 @@ export const AlarmAudioProvider: React.FC<{ children: React.ReactNode }> = ({
     stop,
     isReady,
     isPlaying,
+    isUsingCachedAudio,
   };
 
   return (
