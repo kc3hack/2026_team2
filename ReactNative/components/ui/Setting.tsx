@@ -20,6 +20,7 @@ export function SettingSection({ title, children }: SettingSectionProps) {
         flexDirection: "column",
         gap: 12,
         width: "100%",
+        paddingBottom: 12,
       }}
     >
       <Text

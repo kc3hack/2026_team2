@@ -11,7 +11,11 @@ import {
   Parity,
 } from "react-native-usb-serialport-for-android";
 
-export type SerialPortState = "connected" | "disconnected" | "error";
+export type SerialPortState =
+  | "connected"
+  | "disconnected"
+  | "error"
+  | "unsupported";
 
 interface SerialPortContextType {
   serialState: SerialPortState;

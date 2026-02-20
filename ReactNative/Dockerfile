@@ -16,4 +16,6 @@ RUN chown -R node:node /ReactNative
 
 USER node
 
-CMD yarn start
+RUN yarn install
+
+CMD ["npx", "expo", "start", "--non-interactive"]
