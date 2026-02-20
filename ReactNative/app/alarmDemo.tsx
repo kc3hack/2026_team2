@@ -1,13 +1,16 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useAlarmMonitor } from "../hooks/useAlarmMonitor";
+import { useAlarmAudio } from "../hooks/useAlarmAudio";
 
 export default function HomeScreen() {
   // テスト用に1分後を設定
-  const testTarget = new Date(Date.now() + 1 * 60 * 1000).toISOString();
+  const now = new Date();
+  const targetTime = new Date(now.getTime() + 31 * 60000);
+  const testTarget = `${targetTime.getHours()}:${String(targetTime.getMinutes()).padStart(2, "0")}`;
 
-  // isAlarmActive（アラーム作動中フラグ）も受け取るように追加！
-  const { isMonitoring, volume, magnitude, isAlarmActive } =
+  const { isMonitoring, magnitude, isAlarmActive } =
     useAlarmMonitor(testTarget);
+  const { volume } = useAlarmAudio();
 
   return (
     <View style={[styles.container, isAlarmActive && styles.containerAlert]}>
@@ -26,6 +29,11 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.card}>
+        <Text style={styles.label}>設定時刻:</Text>
+        <Text style={styles.value}>{testTarget}</Text>
+      </View>
+
+      <View style={styles.card}>
         <Text style={styles.label}>スマホの揺れ (Magnitude):</Text>
         <Text style={styles.value}>{magnitude.toFixed(3)}</Text>
       </View>
@@ -35,9 +43,6 @@ export default function HomeScreen() {
         <Text style={styles.value}>{volume.toFixed(0)} %</Text>
       </View>
 
-      {/* magnitude > 1.2 だけでなく、
-         一度でも検知した(isAlarmActive)なら、ずっと表示し続けるように変更！
-      */}
       {isAlarmActive && (
         <View style={styles.alertContainer}>
           <Text style={styles.alert}>⚡️ 寝返りを検知しました！</Text>
@@ -55,7 +60,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f0f0f7",
   },
-  // アラーム作動時に背景色を変えるとかっこいい
   containerAlert: { backgroundColor: "#FFEBEE" },
   title: { fontSize: 28, fontWeight: "bold", marginBottom: 20 },
   card: {
