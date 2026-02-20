@@ -8,6 +8,7 @@ import { useAlarmAudio } from "@/hooks/useAlarmAudio";
 import { useAudioLevel } from "@/hooks/useAudioLevel";
 import { useAccelerometer } from "@/hooks/useAccelerometer";
 import { fetchAndSaveAlarmData } from "@/services/alarmService";
+import { Link } from "expo-router";
 
 export default function Settings() {
   const volume = useAudioLevel();
@@ -171,6 +172,9 @@ export default function Settings() {
         </SettingSection>
         {/* 音量レベルの表示（デバッグ用） */}
         <SettingSection title="デバッグ情報">
+          <Link href="/alarmDemo" style={{ textDecorationLine: "none" }}>
+            <SettingItem title="アラームデモ画面"></SettingItem>
+          </Link>
           <SettingItem title="現在の音量レベル">
             <Text
               style={{

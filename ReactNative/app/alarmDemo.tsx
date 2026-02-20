@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import { useAlarmMonitor } from "../../hooks/useAlarmMonitor";
+import { useAlarmMonitor } from "../hooks/useAlarmMonitor";
 
 export default function HomeScreen() {
   // テスト用に10分後を設定
