@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useAlarmMonitor } from "../hooks/useAlarmMonitor";
 import { useAlarmAudio } from "../hooks/useAlarmAudio";
+import { useEffect } from "react";
 
 export default function HomeScreen() {
   // テスト用に1分後を設定
@@ -10,7 +11,19 @@ export default function HomeScreen() {
 
   const { isMonitoring, magnitude, isAlarmActive } =
     useAlarmMonitor(testTarget);
-  const { volume } = useAlarmAudio();
+  const { volume, setVolume } = useAlarmAudio();
+
+  useEffect(() => {
+    if (isMonitoring) {
+      setVolume(10);
+    }
+  }, [isMonitoring, setVolume]);
+
+  useEffect(() => {
+    if (isAlarmActive) {
+      setVolume(100);
+    }
+  }, [isAlarmActive, setVolume]);
 
   return (
     <View style={[styles.container, isAlarmActive && styles.containerAlert]}>
