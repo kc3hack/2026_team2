@@ -2,8 +2,8 @@ import { View, Text, StyleSheet } from "react-native";
 import { useAlarmMonitor } from "../hooks/useAlarmMonitor";
 
 export default function HomeScreen() {
-  // テスト用に10分後を設定
-  const testTarget = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+  // テスト用に1分後を設定
+  const testTarget = new Date(Date.now() + 1 * 60 * 1000).toISOString();
 
   // isAlarmActive（アラーム作動中フラグ）も受け取るように追加！
   const { isMonitoring, volume, magnitude, isAlarmActive } =

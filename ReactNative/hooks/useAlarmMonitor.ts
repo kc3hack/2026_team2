@@ -14,7 +14,7 @@ import { useAlarmAudio } from "./useAlarmAudio";
 export const useAlarmMonitor = (targetTimeStr: string) => {
   const [isMonitoring, setIsMonitoring] = useState(false);
   const [isAlarmActive, setIsAlarmActive] = useState(false);
-  const { magnitude } = useAccelerometer();
+  const magnitude = useAccelerometer();
   const { volume, setVolume, isReady } = useAlarmAudio();
 
   /**
@@ -30,7 +30,7 @@ export const useAlarmMonitor = (targetTimeStr: string) => {
       if (diffMin <= 30 && diffMin > 0) {
         setIsMonitoring(true);
       }
-    }, 60000); // 1分ごとにチェック
+    }, 6000); // 1分ごとにチェック
 
     return () => clearInterval(checkTime);
   }, [targetTimeStr]);
