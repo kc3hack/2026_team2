@@ -28,5 +28,6 @@ export const useAccelerometer = () => {
     };
   }, []);
 
-  return { ...data, magnitude };
+  // オブジェクトじゃなくて、直接数値を返す
+  return magnitude
 };
