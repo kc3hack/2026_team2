@@ -135,7 +135,7 @@ func HandleAlarmWakeUp(c echo.Context) error {
 
 	// 2. 保存先ディレクトリの設定
 	// 絶対パス "/GoServer/shared" を使うのが今のDocker環境では最も安定します
-	baseDir := "/GoServer/shared"
+	baseDir := "/GoServer/shared/go2py"
 
 	// 💡 フォルダ作成 (動いていた時の 0755 か、より緩い 0777)
 	if err := os.MkdirAll(baseDir, 0777); err != nil {

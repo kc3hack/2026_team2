@@ -7,7 +7,7 @@ export async function sendWakeUpData(
     currentSpeed: number  // 追加
 ) {
     try {
-        const hostname = "192.168.10.120";
+        const hostname = process.env.REACT_NATIVE_PACKAGER_HOSTNAME || "192.168.0.21";
         const url = `http://${hostname}:8080/alarm/wakeUp`;
 
         const formData = new FormData();
