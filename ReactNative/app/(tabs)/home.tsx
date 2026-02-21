@@ -23,7 +23,8 @@ export default function Home() {
   }
 
   // Contextから必要な値を抽出
-  const { isMonitoring, isAlarmActive, reset, setTargetTime } = alarmMonitor;
+  const { isMonitoring, isAlarmActive, reset, setTargetTime, targetTime } =
+    alarmMonitor;
 
   const handleWakeUp = async () => {
     // 💡 Contextのreset関数を使用してアラームを停止
@@ -31,21 +32,21 @@ export default function Home() {
     console.log("アラームを停止しました");
 
     try {
-      const now = new Date();
+      const startDate = new Date();
+      const [targetHour, targetMinute] = targetTime.split(":").map(Number);
+      startDate.setHours(targetHour);
+      startDate.setMinutes(targetMinute - 30); // 30分前に設定
+      startDate.setSeconds(0);
 
-      // 💡 ターゲットを「現在時刻の30分前」にする
-      const target = new Date(now.getTime() - 30 * 60 * 1000);
+      const wakeUpDate = new Date();
+      let wakeUpSeconds = Math.floor(
+        (wakeUpDate.getTime() - startDate.getTime()) / 1000,
+      );
 
-      // 文字列としての時刻（HH:mm）をターゲットから作る
-      const targetTimeStr = `${target.getHours().toString().padStart(2, "0")}:${target.getMinutes().toString().padStart(2, "0")}`;
-
-      // diffSeconds は 1800 秒になる
-      let diffSeconds = Math.floor((now.getTime() - target.getTime()) / 1000);
-
-      console.log(`--- 送信処理開始 (ターゲット: ${targetTimeStr}) ---`);
+      console.log(`起床までの時間: ${wakeUpSeconds} 秒`);
 
       // Context/Hookから取得した現在の設定値を引数に渡す
-      await sendWakeUpData(diffSeconds);
+      await sendWakeUpData(wakeUpSeconds);
 
       console.log("--- 送信完了！ ---");
     } catch (error) {
@@ -75,6 +76,7 @@ export default function Home() {
     >
       <Title>Home</Title>
       <TimeBox
+        initialTime={targetTime}
         onConfirm={(t) => {
           setTargetTime(t);
         }}
