@@ -125,9 +125,9 @@ func HandleAlarmWakeUp(c echo.Context) error {
 	lastSpeed := c.FormValue("last-speed")
 	diffSeconds := c.FormValue("diffSeconds")
 
-	// 数値変換（AI側が数値として読み取るため）
-	pitchInt, _ := strconv.Atoi(lastPitch)
-	speedInt, _ := strconv.Atoi(lastSpeed)
+	// 数値変換（小数に対応）
+	pitchFloat, _ := strconv.ParseFloat(lastPitch, 64)
+	speedFloat, _ := strconv.ParseFloat(lastSpeed, 64)
 	diffSecInt, _ := strconv.Atoi(diffSeconds)
 
 	c.Logger().Infof("--- WakeUp Data Received ---")
@@ -151,8 +151,8 @@ func HandleAlarmWakeUp(c echo.Context) error {
 	// 4. メタデータをAIの指定フォーマットで構成
 	wakeUpData := map[string]interface{}{
 		"last-base-music": lastBaseMusic,
-		"last-pitch":      pitchInt,
-		"last-speed":      speedInt,
+		"last-pitch":      pitchFloat,
+		"last-speed":      speedFloat,
 		"wake_up_time":    diffSecInt,
 	}
 
