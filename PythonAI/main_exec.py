@@ -13,7 +13,7 @@ def main_loop():
         os.makedirs(input_path)
     # --- グラフの初期設定 ---
     plt.ion()
-    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(8, 10))
+    fig, (ax_time, ax_param) = plt.subplots(2, 1, figsize=(10, 8))
     plt.subplots_adjust(hspace=0.4) 
     
 
@@ -33,23 +33,37 @@ def main_loop():
                     # 4. 音声生成と py2go への書き出し
                     print(f"音声生成開始: {next_gene['file']}")
                     generator.render_audio(next_gene)
+
+                    ax_time.cla()
+                    ax_param.cla()
                     # グラフ描画更新
-                    ax1.cla(); ax2.cla(); ax3.cla()
                     for fname, data in engine.history_log.items():
-                        if not data["times"]: continue
-                        ax1.plot(data["times"], label=f"{fname} (Time)", marker='o')
-                        ax2.plot(data["pitches"], label=f"{fname} (Pitch)", linestyle='--')
-                        ax3.plot(data["speeds"], label=f"{fname} (Speed)", linestyle=':')
+                        if not data["times"] or data["times"][-1] is None: continue
+                        
+                        # 起床時間の推移
+                        ax_time.plot(data["times"], label=f"{fname}", marker='.')
+                        
+                        # 最新のベストパラメータを散布図で表示
+                        ax_param.scatter(data["best_pitches"][-1], data["best_speeds"][-1], 
+                                         s=100, label=f"{fname} (Current Best)")
+                        ax_param.annotate(fname.split('.')[0], (data["best_pitches"][-1], data["best_speeds"][-1]))
                     
-                    ax1.set_title("Wake-up Time Trend"); ax1.set_ylabel("Seconds")
-                    ax2.set_title("Pitch Trend"); ax2.set_ylabel("Level")
-                    ax3.set_title("Speed Trend"); ax3.set_ylabel("Rate")
-                    ax1.legend(loc='upper right', fontsize='x-small')
+                    ax_time.set_title("Best Wake-up Time Trend (Lower is better)")
+                    ax_time.set_ylabel("Seconds")
+                    ax_time.legend(loc='upper right', fontsize='small')
+                    
+                    ax_param.set_title("Current Optimal Parameters")
+                    ax_param.set_xlabel("Pitch (0.0 - 8.0)")
+                    ax_param.set_ylabel("Speed (1.0 - 2.0)")
+                    ax_param.set_xlim(-0.5, 8.5)
+                    ax_param.set_ylim(0.9, 2.1)
+                    ax_param.grid(True, linestyle='--')
+                    
                     plt.draw()
                     plt.pause(0.1)
-                
-
-
+                    
+                    
+                    
                 
                 # 5. 処理済みファイルの削除（これが重要！）
                 # これを消さないと、同じファイルで無限ループしてしまいます
