@@ -1,5 +1,6 @@
 import { AlarmData, AlarmDataResponse } from "@/types/alarm";
 import { saveMetadata, saveAudioFile } from "@/utils/fileCache";
+import { AppConfig } from "@/constants/config";
 
 /**
  * サーバーからアラームデータを取得し、キャッシュに保存する
@@ -7,10 +8,7 @@ import { saveMetadata, saveAudioFile } from "@/utils/fileCache";
  */
 export async function fetchAndSaveAlarmData(): Promise<void> {
   try {
-    // 環境変数からホスト名を取得（デフォルト: 192.168.0.21）
-    const hostname =
-      process.env.REACT_NATIVE_PACKAGER_HOSTNAME || "192.168.0.21";
-    const url = `http://${hostname}:8080/get`;
+    const url = `${AppConfig.serverBaseUrl}/get`;
 
     console.log(`Fetching alarm data from: ${url}`);
 

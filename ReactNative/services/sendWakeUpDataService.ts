@@ -1,11 +1,9 @@
-import { getAudioFileUri, getMetadata } from "@/utils/fileCache";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { getMetadata } from "@/utils/fileCache";
+import { AppConfig } from "@/constants/config";
 
 export async function sendWakeUpData(diffSeconds: number) {
   try {
-    const hostname =
-      process.env.REACT_NATIVE_PACKAGER_HOSTNAME || "192.168.0.21";
-    const url = `http://${hostname}:8080/alarm/wakeUp`;
+    const url = `${AppConfig.serverBaseUrl}/alarm/wakeUp`;
 
     const formData = new FormData();
 
