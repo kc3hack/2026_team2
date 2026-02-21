@@ -1,9 +1,10 @@
 package main
 
 import (
+	"main/handlers"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"main/handlers"
 )
 
 func main() {
@@ -24,6 +25,8 @@ func main() {
 
 	// アラームレビュー
 	e.POST("/alarm/review", handlers.HandleAlarmReview)
+
+	e.POST("/alarm/wakeUp", handlers.HandleAlarmWakeUp)
 
 	// サーバーの起動
 	e.Logger.Fatal(e.Start(":8080"))

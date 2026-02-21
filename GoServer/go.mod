@@ -1,4 +1,4 @@
-module superalarm
+module main
 
 go 1.25
 
