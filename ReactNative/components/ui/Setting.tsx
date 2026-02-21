@@ -26,7 +26,7 @@ export function SettingSection({ title, children }: SettingSectionProps) {
       <Text
         style={{
           fontSize: 18,
-          color: FontColors.maincolors,
+          color: FontColors.title,
         }}
       >
         {title}

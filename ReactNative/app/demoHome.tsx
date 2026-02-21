@@ -1,6 +1,6 @@
 import { Pressable, View } from "react-native";
 import { useEffect, useContext } from "react";
-import Button from "@/components/ui/Button";
+import CatButton from "@/components/ui/CatButton";
 import TimeBox from "@/components/ui/TimeBox";
 import { MainColors } from "@/constants/colors";
 import Title from "@/components/ui/title";
@@ -76,15 +76,15 @@ export default function Home() {
           }}
         />
       </Pressable>
-      <Button
+      <CatButton
         disabled={!isMonitoring}
         onPress={() => {
           reset();
           trySendData("0x32");
         }}
       >
-        stop
-      </Button>
+        STOP
+      </CatButton>
     </View>
   );
 }

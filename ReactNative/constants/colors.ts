@@ -11,4 +11,5 @@ export const BtnColors = {
 export const FontColors = {
   maincolors: "#FFFFFF",
   disabled: "#A9A9A9",
+  title: "#765013",
 };
