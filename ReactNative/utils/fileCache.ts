@@ -93,3 +93,23 @@ export async function getAudioFileUri(): Promise<string | null> {
     return null;
   }
 }
+
+export async function clearCache(): Promise<void> {
+  try {
+    const metadataFile = new File(Paths.cache, METADATA_FILENAME);
+    const audioFile = new File(Paths.cache, AUDIO_FILENAME);
+
+    if (metadataFile.exists) {
+      await metadataFile.delete();
+      console.log("Metadata file deleted");
+    }
+
+    if (audioFile.exists) {
+      await audioFile.delete();
+      console.log("Audio file deleted");
+    }
+  } catch (error) {
+    console.error("Failed to clear cache:", error);
+    throw error;
+  }
+}
