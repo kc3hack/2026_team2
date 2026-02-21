@@ -7,9 +7,7 @@ export type TitleProps = {
 };
 export default function Title({ children }: TitleProps) {
   return (
-    <Text
-      style={{ fontSize: 24, fontWeight: "bold", color: FontColors.maincolors }}
-    >
+    <Text style={{ fontSize: 24, fontWeight: "bold", color: FontColors.title }}>
       {children}
     </Text>
   );
