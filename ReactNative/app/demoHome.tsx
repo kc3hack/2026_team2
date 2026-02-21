@@ -6,9 +6,11 @@ import { MAINCOLORS } from "@/constants/colors";
 import Title from "@/components/ui/title";
 import { AlarmMonitorContext } from "@/contexts/AlarmMonitorContext";
 import { useAlarmAudio } from "@/hooks/useAlarmAudio";
+import { useSerialPort } from "@/hooks/useSerialPort";
 
 export default function Home() {
   const alarmMonitor = useContext(AlarmMonitorContext);
+  const { trySendData } = useSerialPort();
   const { setVolume } = useAlarmAudio();
 
   if (!alarmMonitor) {
@@ -16,16 +18,6 @@ export default function Home() {
       "AlarmMonitorContext must be used within AlarmMonitorProvider",
     );
   }
-
-  // useEffect(() => {
-  //   // 現在時刻の20分後を5分刻みに切り捨てて設定
-  //   const now = new Date();
-  //   const target = new Date(now.getTime() + 20 * 60 * 1000); // 20分後
-  //   const minutes = Math.floor(target.getMinutes() / 5) * 5; // 5分刻みに切り捨て
-  //   target.setMinutes(minutes);
-  //   const timeStr = `${String(target.getHours()).padStart(2, "0")}:${String(target.getMinutes()).padStart(2, "0")}`;
-  //   setTargetTime(timeStr);
-  // }, []);
 
   const { isMonitoring, isAlarmActive, reset, setTargetTime, targetTime } =
     alarmMonitor;
@@ -39,6 +31,15 @@ export default function Home() {
       setVolume(0);
     }
   }, [isMonitoring, isAlarmActive, setVolume]);
+
+  const handleSendData = async () => {
+    try {
+      await trySendData("0x31");
+      console.log("Connection test: 0x31 sent successfully");
+    } catch (error) {
+      console.error("Connection test failed:", error);
+    }
+  };
 
   return (
     <View
@@ -54,13 +55,17 @@ export default function Home() {
       <Title>Home</Title>
       <Pressable
         onPress={() => {
-          // 現在時刻の20分後を5分刻みに切り捨てて設定
-          const now = new Date();
-          const target = new Date(now.getTime() + 20 * 60 * 1000); // 20分後
-          const minutes = Math.floor(target.getMinutes() / 5) * 5; // 5分刻みに切り捨て
-          target.setMinutes(minutes);
-          const timeStr = `${String(target.getHours()).padStart(2, "0")}:${String(target.getMinutes()).padStart(2, "0")}`;
-          setTargetTime(timeStr);
+          if (!isMonitoring) {
+            // 現在時刻の20分後を5分刻みに切り捨てて設定
+            const now = new Date();
+            const target = new Date(now.getTime() + 20 * 60 * 1000); // 20分後
+            const minutes = Math.floor(target.getMinutes() / 5) * 5; // 5分刻みに切り捨て
+            target.setMinutes(minutes);
+            const timeStr = `${String(target.getHours()).padStart(2, "0")}:${String(target.getMinutes()).padStart(2, "0")}`;
+            setTargetTime(timeStr);
+          } else {
+            handleSendData();
+          }
         }}
       >
         <TimeBox
@@ -81,4 +86,7 @@ export default function Home() {
       </Button>
     </View>
   );
+}
+function trySendData(arg0: string) {
+  throw new Error("Function not implemented.");
 }
