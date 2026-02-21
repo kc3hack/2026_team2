@@ -3,6 +3,7 @@ import random
 import json
 
 
+
 # 設定
 SOUNDS_DIR = "raw_sounds/"
 
@@ -20,6 +21,7 @@ class AlarmGA:
             f: {"best_time": float('inf'), "speed": 1.0, "pitch": 0.0} 
             for f in self.available_sounds
         }
+        self.history_log = {f: {"times": [], "pitches": [], "speeds": []} for f in self.available_sounds}
         
     def get_initial_gene(self):
         """初回用のランダムな遺伝子を生成"""
@@ -65,6 +67,13 @@ class AlarmGA:
 
         fname = last_result["file"]
         wake_time = last_result["wake_up_time"]
+        # 履歴の記録 (描画用)
+        if fname in self.history_log:
+            self.history_log[fname]["times"].append(wake_time)
+            self.history_log[fname]["pitches"].append(last_result["pitch"])
+            self.history_log[fname]["speeds"].append(last_result["speed"])
+
+
         # 1. 最速記録の更新判定
         if wake_time < self.performance_history[fname]["best_time"]:
             self.performance_history[fname] = {
@@ -74,15 +83,23 @@ class AlarmGA:
             }
             print(f"   >>> Record Updated for {fname}!")
 
+        # 次の遺伝子生成ロジック (既存)
         best_file = min(self.performance_history, key=lambda k: self.performance_history[k]["best_time"])
+        target_file = best_file if (random.random() < 0.5 and self.performance_history[best_file]["best_time"] < 100) else random.choice(self.available_sounds)
+        
+
+       
         if random.random() < 0.5 and self.performance_history[best_file]["best_time"] < 100:
             target_file = best_file
         else:
             target_file = random.choice(self.available_sounds)
+           
+        best_cfg = self.performance_history[target_file]
+        
         
 
-        # 1. 適応度の計算 (早いほど高い)
         
+       
         late_border=60
         early_border=30
         pitch_learning_noise_min=-0.3
@@ -92,9 +109,7 @@ class AlarmGA:
         boost_s = 0.0 
         boost_p = 0.0  
 
-        # 3. パラメータの決定（そのファイルのベストを基準にノイズを加える）
-        best_cfg = self.performance_history[target_file]
-        
+     
         # 基本ノイズ（音の質を変える）
         noise_s = random.uniform(-speed_learning_noise_min, speed_learning_noise_max)
         noise_p = random.uniform(pitch_learning_noise_min, pitch_learning_noise_max)
@@ -115,7 +130,6 @@ class AlarmGA:
            
         }
         
-
-
         return new_gene
+    
 # GoからのJSONを監視し、設計図を吐き出すメインループをここに記述
