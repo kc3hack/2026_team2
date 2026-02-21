@@ -28,16 +28,6 @@ type AlarmAudioContextType = {
   isPlaying: boolean;
   /** キャッシュされた音声を使用しているかどうか */
   isUsingCachedAudio: boolean;
-  /** 現在ロードされている音声のURI */
-  audioUri: string | null; // ← 追加
-  /** AI設定: ベース音楽名 */
-  currentMusic: string;
-  /** AI設定: ピッチ */
-  currentPitch: number;
-  /** AI設定: 速度 */
-  currentSpeed: number;
-  /** AI設定を一括更新する関数 (ロード時に使用) */
-  setAiSettings: (music: string, pitch: number, speed: number) => void;
 };
 
 /**
@@ -60,17 +50,6 @@ export const AlarmAudioProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isUsingCachedAudio, setIsUsingCachedAudio] = useState<boolean>(false);
   const soundRef = useRef<Audio.Sound | null>(null);
   const isLoadingRef = useRef<boolean>(false);
-  const [audioUri, setAudioUri] = useState<string | null>(null);
-  // 💡 AI設定用のステートを追加 (デフォルト値をセット)
-  const [currentMusic, setCurrentMusic] = useState<string>("base-1");
-  const [currentPitch, setCurrentPitch] = useState<number>(0);
-  const [currentSpeed, setCurrentSpeed] = useState<number>(0);
-
-  const setAiSettings = useCallback((music: string, pitch: number, speed: number) => {
-    setCurrentMusic(music);
-    setCurrentPitch(pitch);
-    setCurrentSpeed(speed);
-  }, []);
 
   /**
    * 音声をロードする関数
@@ -87,8 +66,6 @@ export const AlarmAudioProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       // 音声ファイルのURIを取得
       const cachedUri = await getAudioFileUri();
-      //AudioUriをset
-      setAudioUri(cachedUri);
 
       // デフォルトの音声ファイル（require形式）
       const defaultAudio = require("@/assets/music/default.wav");
@@ -233,11 +210,6 @@ export const AlarmAudioProvider: React.FC<{ children: React.ReactNode }> = ({
     isReady,
     isPlaying,
     isUsingCachedAudio,
-    audioUri,
-    currentMusic,
-    currentPitch,
-    currentSpeed,
-    setAiSettings,
   };
 
   return (
