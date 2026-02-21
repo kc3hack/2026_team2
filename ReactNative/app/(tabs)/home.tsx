@@ -27,20 +27,22 @@ export default function Home() {
 
     try {
       const now = new Date();
-      const [hours, minutes] = time.split(":").map(Number);
-      const target = new Date();
-      target.setHours(hours, minutes, 0, 0);
+      
+      // 💡 1. ターゲットを「現在時刻の30分前」にする
+      const target = new Date(now.getTime() - 30 * 60 * 1000); 
 
+      // 💡 2. 文字列としての時刻（HH:mm）をターゲットから作る
+      // これをしないと、sendWakeUpDataに渡す時間が TimeBox の値とズレてしまいます
+      const targetTimeStr = `${target.getHours().toString().padStart(2, '0')}:${target.getMinutes().toString().padStart(2, '0')}`;
+
+      // 💡 3. diffSeconds は単純に 1800 (30分) になる
       let diffSeconds = Math.floor((now.getTime() - target.getTime()) / 1000);
-      if (diffSeconds < -43200) { 
-        diffSeconds += 86400; 
-      }
 
       console.log("--- 送信処理開始 ---");
       
       // 💡 Contextから取得した現在の設定値を引数に渡す
       await sendWakeUpData(
-        time, 
+        targetTimeStr, 
         audioUri, 
         diffSeconds,
         currentMusic, 
