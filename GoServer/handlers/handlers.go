@@ -3,15 +3,17 @@ package handlers
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
+	"strconv"
 	"log"
 	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
+	"main/models"
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"main/models"
 )
 
 // HandleHealth はヘルスチェックエンドポイントのハンドラー
@@ -113,5 +115,60 @@ func HandleGetAlarm(c echo.Context) error {
 func HandleAlarmReview(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{
 		"message": "OK",
+	})
+}
+
+func HandleAlarmWakeUp(c echo.Context) error {
+	// 1. フォームデータの取得（AI用の項目も追加）
+	lastBaseMusic := c.FormValue("last-base-music")
+	lastPitch := c.FormValue("last-pitch")
+	lastSpeed := c.FormValue("last-speed")
+	diffSeconds := c.FormValue("diffSeconds")
+
+	// 数値変換（AI側が数値として読み取るため）
+	pitchInt, _ := strconv.Atoi(lastPitch)
+	speedInt, _ := strconv.Atoi(lastSpeed)
+	diffSecInt, _ := strconv.Atoi(diffSeconds)
+
+	c.Logger().Infof("--- WakeUp Data Received ---")
+	c.Logger().Infof("Music: %s, Diff: %d sec", lastBaseMusic, diffSecInt)
+
+	// 2. 保存先ディレクトリの設定
+	// 絶対パス "/GoServer/shared" を使うのが今のDocker環境では最も安定します
+	baseDir := "/GoServer/shared"
+
+	// 💡 フォルダ作成 (動いていた時の 0755 か、より緩い 0777)
+	if err := os.MkdirAll(baseDir, 0777); err != nil {
+		c.Logger().Errorf("DIRECTORY ERROR: %v", err)
+		// 権限エラーで止まらないように return せずログだけに留めるのも手です
+	}
+
+	// 3. ファイル名の決定 (UUID風に毎回ユニークにする)
+	timestamp := time.Now().Format("20060102_150405")
+	jsonFileName := fmt.Sprintf("wake_up_%s_%d.json", timestamp, rand.Intn(1000))
+	jsonPath := filepath.Join(baseDir, jsonFileName)
+
+	// 4. メタデータをAIの指定フォーマットで構成
+	wakeUpData := map[string]interface{}{
+		"last-base-music": lastBaseMusic,
+		"last-pitch":      pitchInt,
+		"last-speed":      speedInt,
+		"wake_up_time":    diffSecInt,
+	}
+
+	jsonData, _ := json.MarshalIndent(wakeUpData, "", "  ")
+
+	// 5. 書き出し
+	// os.WriteFile を使用（動いていた実績のある方法）
+	if err := os.WriteFile(jsonPath, jsonData, 0666); err != nil {
+		c.Logger().Errorf("Failed to write JSON: %v", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Permission Denied"})
+	}
+
+	c.Logger().Infof("Metadata JSON saved to: %s", jsonPath)
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"data":   wakeUpData,
 	})
 }
