@@ -1,12 +1,13 @@
-import { View, Text, Alert, ScrollView } from "react-native";
-import { useState } from "react";
-import { MAINCOLORS } from "@/constants/colors";
+import { View, Text, Alert, ScrollView, Pressable } from "react-native";
+import { useState, useContext } from "react";
+import { MAINCOLORS, FontColors } from "@/constants/colors";
 import Title from "@/components/ui/title";
 import { SettingItem, SettingSection } from "@/components/ui/Setting";
 import { useSerialPort } from "@/hooks/useSerialPort";
 import { useAlarmAudio } from "@/hooks/useAlarmAudio";
 import { useAudioLevel } from "@/hooks/useAudioLevel";
 import { useAccelerometer } from "@/hooks/useAccelerometer";
+import { AlarmMonitorContext } from "@/contexts/AlarmMonitorContext";
 import { fetchAndSaveAlarmData } from "@/services/alarmService";
 import { clearCache } from "@/utils/fileCache";
 import { Link } from "expo-router";
@@ -14,10 +15,25 @@ import { Link } from "expo-router";
 export default function Settings() {
   const volume = useAudioLevel();
   const magnitude = useAccelerometer();
+  const alarmMonitor = useContext(AlarmMonitorContext);
   const { serialState, trySendData } = useSerialPort();
   const { setVolume, loadAudio, isReady, isPlaying, isUsingCachedAudio } =
     useAlarmAudio();
   const [isLoading, setIsLoading] = useState(false);
+
+  if (!alarmMonitor) {
+    throw new Error(
+      "AlarmMonitorContext must be used within AlarmMonitorProvider",
+    );
+  }
+
+  const {
+    threshold,
+    setThreshold,
+    monitoringStartMinutes,
+    setMonitoringStartMinutes,
+  } = alarmMonitor;
+
   // 接続状態を日本語に変換
   const getConnectionStatusText = () => {
     switch (serialState) {
@@ -149,6 +165,124 @@ export default function Settings() {
             </Text>
           </SettingItem>
           <SettingItem title="接続をテスト" onPress={handleConnectionTest} />
+        </SettingSection>
+        <SettingSection title="アラーム設定">
+          <SettingItem title="加速度センサー閾値">
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 3,
+                backgroundColor: MAINCOLORS.border,
+                paddingHorizontal: 4,
+                borderRadius: 8,
+              }}
+            >
+              <Pressable
+                onPress={() => {
+                  setThreshold((prev) => prev - 0.005);
+                }}
+                style={{
+                  paddingHorizontal: 6,
+                }}
+              >
+                <Text
+                  style={{
+                    color: FontColors.maincolors,
+                    fontSize: 20,
+                    fontWeight: "600",
+                  }}
+                >
+                  -
+                </Text>
+              </Pressable>
+              <Text
+                style={{
+                  color: FontColors.maincolors,
+                  fontSize: 16,
+                  fontWeight: "600",
+                }}
+              >
+                {threshold.toFixed(3)}
+              </Text>
+              <Pressable
+                onPress={() => {
+                  setThreshold((prev) => prev + 0.005);
+                }}
+                style={{
+                  paddingHorizontal: 6,
+                }}
+              >
+                <Text
+                  style={{
+                    color: FontColors.maincolors,
+                    fontSize: 20,
+                    fontWeight: "600",
+                  }}
+                >
+                  +
+                </Text>
+              </Pressable>
+            </View>
+          </SettingItem>
+          <SettingItem title="開始時間(分前)">
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 6,
+                backgroundColor: MAINCOLORS.border,
+                paddingHorizontal: 8,
+                borderRadius: 8,
+              }}
+            >
+              <Pressable
+                onPress={() => {
+                  setMonitoringStartMinutes((prev) => prev - 1);
+                }}
+                style={{
+                  paddingHorizontal: 6,
+                }}
+              >
+                <Text
+                  style={{
+                    color: FontColors.maincolors,
+                    fontSize: 20,
+                    fontWeight: "600",
+                  }}
+                >
+                  -
+                </Text>
+              </Pressable>
+              <Text
+                style={{
+                  color: FontColors.maincolors,
+                  fontSize: 16,
+                  fontWeight: "600",
+                }}
+              >
+                {monitoringStartMinutes}分
+              </Text>
+              <Pressable
+                onPress={() => {
+                  setMonitoringStartMinutes((prev) => prev + 1);
+                }}
+                style={{
+                  paddingHorizontal: 6,
+                }}
+              >
+                <Text
+                  style={{
+                    color: FontColors.maincolors,
+                    fontSize: 20,
+                    fontWeight: "600",
+                  }}
+                >
+                  +
+                </Text>
+              </Pressable>
+            </View>
+          </SettingItem>
         </SettingSection>
         <SettingSection title="音声ファイル">
           <SettingItem title="ファイル状況">

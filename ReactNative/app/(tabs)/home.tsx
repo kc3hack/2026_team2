@@ -1,18 +1,18 @@
 import { View } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useContext } from "react";
 import Button from "@/components/ui/Button";
 import TimeBox from "@/components/ui/TimeBox";
 import { MAINCOLORS } from "@/constants/colors";
 import Title from "@/components/ui/title";
-import { useAlarmMonitor } from "@/hooks/useAlarmMonitor";
+import { AlarmMonitorContext } from "@/contexts/AlarmMonitorContext";
 import { useAlarmAudio } from "@/hooks/useAlarmAudio";
 import { sendWakeUpData } from "@/services/sendWakeUpDataService";
 
 export default function Home() {
-  const [time, setTime] = useState("09:00");
-  const { isMonitoring, isAlarmActive, setIsReset } = useAlarmMonitor(time);
-  
-  // 💡 Contextから現在のAI設定値（Music, Pitch, Speed）も取得するように追加
+  // 💡 Contextから監視状態を取得
+  const alarmMonitor = useContext(AlarmMonitorContext);
+
+  // 💡 AI設定値（Music, Pitch, Speed）と音量制御を取得
   const { 
     setVolume, 
     audioUri, 
@@ -21,26 +21,36 @@ export default function Home() {
     currentSpeed 
   } = useAlarmAudio();
 
+  // Contextが存在しない場合のガード
+  if (!alarmMonitor) {
+    throw new Error(
+      "AlarmMonitorContext must be used within AlarmMonitorProvider",
+    );
+  }
+
+  // Contextから必要な値を抽出
+  const { isMonitoring, isAlarmActive, reset, setTargetTime } = alarmMonitor;
+
   const handleWakeUp = async () => {
-    setIsReset(true); 
+    // 💡 Contextのreset関数を使用してアラームを停止
+    reset(); 
     console.log("アラームを停止しました");
 
     try {
       const now = new Date();
       
-      // 💡 1. ターゲットを「現在時刻の30分前」にする
+      // 💡 ターゲットを「現在時刻の30分前」にする
       const target = new Date(now.getTime() - 30 * 60 * 1000); 
 
-      // 💡 2. 文字列としての時刻（HH:mm）をターゲットから作る
-      // これをしないと、sendWakeUpDataに渡す時間が TimeBox の値とズレてしまいます
+      // 文字列としての時刻（HH:mm）をターゲットから作る
       const targetTimeStr = `${target.getHours().toString().padStart(2, '0')}:${target.getMinutes().toString().padStart(2, '0')}`;
 
-      // 💡 3. diffSeconds は単純に 1800 (30分) になる
+      // diffSeconds は 1800 秒になる
       let diffSeconds = Math.floor((now.getTime() - target.getTime()) / 1000);
 
-      console.log("--- 送信処理開始 ---");
+      console.log(`--- 送信処理開始 (ターゲット: ${targetTimeStr}) ---`);
       
-      // 💡 Contextから取得した現在の設定値を引数に渡す
+      // Context/Hookから取得した現在の設定値を引数に渡す
       await sendWakeUpData(
         targetTimeStr, 
         audioUri, 
@@ -79,7 +89,7 @@ export default function Home() {
       <Title>Home</Title>
       <TimeBox
         onConfirm={(t) => {
-          setTime(t);
+          setTargetTime(t);
         }}
       />
       <Button
