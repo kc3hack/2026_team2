@@ -15,14 +15,14 @@ export default function CatBackground() {
         {/* 左耳：Figmaの形状そのまま。反転させずに配置 */}
         <View style={[styles.earWrapper, styles.leftEar]}>
           <Svg width="97" height="113" viewBox="0 0 99 113">
-            <Path d={earD} fill="#D5A959" />
+            <Path d={earD} fill="#DBA959" />
           </Svg>
         </View>
 
         {/* 右耳：形状が同じなら scaleX で反転させるだけでOK */}
         <View style={[styles.earWrapper, styles.rightEar]}>
           <Svg width="97" height="113" viewBox="0 0 99 113">
-            <Path d={earD} fill="#D5A959" />
+            <Path d={earD} fill="#DBA959" />
           </Svg>
         </View>
 
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   mainBody: {
     flex: 1,
-    backgroundColor: '#D5A959',
+    backgroundColor: '#DBA959',
     borderTopLeftRadius: 70,
     borderTopRightRadius: 70,
     zIndex: 1, // 耳の付け根を隠す
