@@ -5,7 +5,7 @@ import json
 
 # 設定
 SOUNDS_DIR = "raw_sounds/"
-INPUT_JSON_PATH = "shared/go2py/input.json"
+
 
 
 class AlarmGA:
@@ -29,18 +29,15 @@ class AlarmGA:
             "pitch": 0.0
         }
     
-    def load_input_from_go(self):
+    def load_input_from_go(self,file_path):
         """shared/go2py 内のJSONを読み込んで、Pythonで扱いやすい形式に変換する"""
-        if not os.path.exists(INPUT_JSON_PATH):
+        if not os.path.exists(file_path):
             print(f"Waiting for input file at {INPUT_JSON_PATH}...")
             return None
         
         try:
-            with open(INPUT_JSON_PATH, 'r', encoding='utf-8') as f:
+            with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            
-            # JSONのキーを内部ロジック用にマッピング
-            # 注意: ファイル名に .wav が付いていない場合は補完が必要
             fname = data["last-base-music"]
             if not fname.endswith('.wav'):
                 fname += ".wav"
