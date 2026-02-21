@@ -335,7 +335,7 @@ export default function Settings() {
                 fontWeight: "600",
               }}
             >
-              {volume}
+              {volume.toFixed(3)} %
             </Text>
           </SettingItem>
           <SettingItem title="現在の加速度の大きさ">
