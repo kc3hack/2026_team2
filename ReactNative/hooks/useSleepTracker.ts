@@ -47,8 +47,7 @@ export const useSleepTracker = () => {
       intervalId = setInterval(() => {
         const now = new Date().toLocaleTimeString('ja-JP', { 
           hour: '2-digit', 
-          minute: '2-digit', 
-          second: '2-digit' 
+          minute: '2-digit'
         });
 
         // その1分間で見つけた最大値を記録
