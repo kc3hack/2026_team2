@@ -7,13 +7,14 @@ import Title from "@/components/ui/title";
 import { AlarmMonitorContext } from "@/contexts/AlarmMonitorContext";
 import { useAlarmAudio } from "@/hooks/useAlarmAudio";
 import { sendWakeUpData } from "@/services/sendWakeUpDataService";
+import { fetchAndSaveAlarmData } from "@/services/alarmService";
 
 export default function Home() {
   // 💡 Contextから監視状態を取得
   const alarmMonitor = useContext(AlarmMonitorContext);
 
   // 💡 AI設定値（Music, Pitch, Speed）と音量制御を取得
-  const { setVolume } = useAlarmAudio();
+  const { setVolume, loadAudio } = useAlarmAudio();
 
   // Contextが存在しない場合のガード
   if (!alarmMonitor) {
@@ -49,6 +50,12 @@ export default function Home() {
       await sendWakeUpData(wakeUpSeconds);
 
       console.log("--- 送信完了！ ---");
+
+      // サーバーからデータを取得してキャッシュに保存
+      await fetchAndSaveAlarmData();
+
+      // 音声ファイルをリロード
+      await loadAudio();
     } catch (error) {
       console.error("送信に失敗しました:", error);
     }
