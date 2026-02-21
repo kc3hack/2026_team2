@@ -15,3 +15,5 @@ RUN python -m pip install --no-cache-dir -r requirements.txt
 
 # ユーザーを切り替え
 USER python
+
+CMD ["python", "main_exec.py"]
