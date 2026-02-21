@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tkhs0114.ReactNative"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +22,9 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "permissions": [
-        "android.permission.USB_PERMISSION"
+        "android.permission.USB_PERMISSION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
       "usesFeatures": [
         {
@@ -37,6 +40,8 @@
     },
     "plugins": [
       "expo-router",
+      "expo-sensors",
+      "expo-av",
       [
         "expo-splash-screen",
         {

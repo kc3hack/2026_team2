@@ -1,6 +1,7 @@
 import { Stack } from "expo-router";
 import { Platform } from "react-native";
 import Constants, { ExecutionEnvironment } from "expo-constants";
+import { AlarmAudioProvider } from "@/contexts/AlarmAudioContext";
 
 const DummySerialPortProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -28,10 +29,16 @@ export default function RootLayout() {
   if (Platform.OS === "android" && !isExpoGo) {
     return (
       <SerialPortProvider>
-        <Stack screenOptions={{ headerShown: false }} />
+        <AlarmAudioProvider>
+          <Stack screenOptions={{ headerShown: false }} />
+        </AlarmAudioProvider>
       </SerialPortProvider>
     );
   } else {
-    return <Stack screenOptions={{ headerShown: false }} />;
+    return (
+      <AlarmAudioProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </AlarmAudioProvider>
+    );
   }
 }
