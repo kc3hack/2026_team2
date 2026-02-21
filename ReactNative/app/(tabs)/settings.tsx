@@ -20,6 +20,7 @@ export default function Settings() {
   const { setVolume, loadAudio, isReady, isPlaying, isUsingCachedAudio } =
     useAlarmAudio();
   const [isLoading, setIsLoading] = useState(false);
+  const [testCommand, setTestCommand] = useState<"0x31" | "0x32">("0x31");
 
   if (!alarmMonitor) {
     throw new Error(
@@ -66,14 +67,30 @@ export default function Settings() {
     }
   };
 
-  // 接続テスト（0x31を送信）
+  // 接続テスト(0x31と0x32を交互に送信)
   const handleConnectionTest = async () => {
     try {
-      await trySendData("0x31");
-      console.log("Connection test: 0x31 sent successfully");
+      await trySendData(testCommand);
+      console.log(`Connection test: ${testCommand} sent successfully`);
+      // 次回は別のコマンドを送信
+      setTestCommand(testCommand === "0x31" ? "0x32" : "0x31");
     } catch (error) {
       console.error("Connection test failed:", error);
     }
+  };
+
+  const getConnectionTestText = () => {
+    return (
+      <Text
+        style={{
+          color: testCommand === "0x31" ? FontColors.maincolors : "#F44336",
+          fontSize: 16,
+          fontWeight: "600",
+        }}
+      >
+        {testCommand === "0x31" ? "停止中" : "起動中"}
+      </Text>
+    );
   };
 
   // 再生テスト（音量50%で5秒間再生）
@@ -164,7 +181,9 @@ export default function Settings() {
               {getConnectionStatusText()}
             </Text>
           </SettingItem>
-          <SettingItem title="接続をテスト" onPress={handleConnectionTest} />
+          <SettingItem title="接続をテスト" onPress={handleConnectionTest}>
+            {getConnectionTestText()}
+          </SettingItem>
         </SettingSection>
         <SettingSection title="アラーム設定">
           <SettingItem title="加速度センサー閾値">
