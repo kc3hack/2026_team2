@@ -28,6 +28,8 @@ type AlarmAudioContextType = {
   isPlaying: boolean;
   /** キャッシュされた音声を使用しているかどうか */
   isUsingCachedAudio: boolean;
+  /** 現在ロードされている音声のURI */
+  audioUri: string | null; // ← 追加
 };
 
 /**
@@ -50,6 +52,7 @@ export const AlarmAudioProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isUsingCachedAudio, setIsUsingCachedAudio] = useState<boolean>(false);
   const soundRef = useRef<Audio.Sound | null>(null);
   const isLoadingRef = useRef<boolean>(false);
+  const [audioUri, setAudioUri] = useState<string | null>(null);
 
   /**
    * 音声をロードする関数
@@ -66,6 +69,9 @@ export const AlarmAudioProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       // 音声ファイルのURIを取得
       const cachedUri = await getAudioFileUri();
+
+      //AudioUriをset
+      setAudioUri(cachedUri);
 
       // デフォルトの音声ファイル（require形式）
       const defaultAudio = require("@/assets/music/default.wav");
@@ -210,6 +216,7 @@ export const AlarmAudioProvider: React.FC<{ children: React.ReactNode }> = ({
     isReady,
     isPlaying,
     isUsingCachedAudio,
+    audioUri,
   };
 
   return (
