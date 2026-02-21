@@ -99,6 +99,7 @@ export default function Home() {
           disabled={!isMonitoring}
           onPress={() => {
             handleWakeUp();
+            trySendData("0x32");
           }}
         >
           stop
