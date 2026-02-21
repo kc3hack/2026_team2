@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -29,11 +29,13 @@ const createInfiniteData = (data: string[]) => {
 
 export type TimeBoxProps = {
   initialTime?: string;
+  disabled?: boolean;
   onConfirm: (time: string) => void;
 };
 
 export default function TimeBox({
   initialTime = "00:00",
+  disabled,
   onConfirm,
 }: TimeBoxProps) {
   const [h, m] = initialTime.split(":");
@@ -44,6 +46,18 @@ export default function TimeBox({
     .toString()
     .padStart(2, "0");
   const [minute, setMinute] = useState(roundedMinute);
+
+  // initialTimeが外部から変更されたら状態を更新
+  useEffect(() => {
+    if (!editing) {
+      const [newH, newM] = initialTime.split(":");
+      setHour(newH);
+      const newRoundedMinute = (Math.round(parseInt(newM) / 5) * 5)
+        .toString()
+        .padStart(2, "0");
+      setMinute(newRoundedMinute);
+    }
+  }, [initialTime, editing]);
 
   const handleScroll = (
     type: "h" | "m",
@@ -66,7 +80,7 @@ export default function TimeBox({
   };
 
   return (
-    <Pressable onPress={() => setEditing(true)} disabled={editing}>
+    <Pressable onPress={() => setEditing(true)} disabled={editing || disabled}>
       <View
         style={{
           height: 270,

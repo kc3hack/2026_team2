@@ -321,8 +321,11 @@ export default function Settings() {
         </SettingSection>
         {/* 音量レベルの表示（デバッグ用） */}
         <SettingSection title="デバッグ情報">
-          <Link href="/alarmDemo" style={{ textDecorationLine: "none" }}>
+          <Link href="/demoHome" style={{ textDecorationLine: "none" }}>
             <SettingItem title="アラームデモ画面"></SettingItem>
+          </Link>
+          <Link href="/alarmDemo" style={{ textDecorationLine: "none" }}>
+            <SettingItem title="デモ画面(加速度センサー付き)"></SettingItem>
           </Link>
           <SettingItem title="現在の音量レベル">
             <Text
