@@ -1,6 +1,6 @@
 {
-	"base-music": "base-1",
-	"pitch": 0,
-	"speed": 0,
-	"file-name": "sample1.wav"
+  "base-music": "base-1",
+  "pitch": 1.5,
+  "speed": 1.2,
+  "file-name": "sample1.wav"
 }
