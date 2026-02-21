@@ -82,7 +82,7 @@ export default function Home() {
         gap: 84,
       }}
     >
-      <Title>Home</Title>
+      <Title>アラーム</Title>
       <TimeBox
         initialTime={targetTime}
         onConfirm={(t) => {

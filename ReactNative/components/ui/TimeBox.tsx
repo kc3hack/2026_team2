@@ -83,7 +83,7 @@ export default function TimeBox({
     <Pressable onPress={() => setEditing(true)} disabled={editing || disabled}>
       <View
         style={{
-          height: 270,
+          height: 260,
           justifyContent: "center",
           alignItems: "center",
           overflow: "hidden",
@@ -98,7 +98,7 @@ export default function TimeBox({
             justifyContent: "center",
             alignItems: "center",
             gap: 12,
-            borderWidth: 1,
+            borderWidth: 3,
             borderColor: MainColors.border,
             borderRadius: 24,
             overflow: editing ? "visible" : "hidden",

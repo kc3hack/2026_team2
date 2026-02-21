@@ -1,3 +1,4 @@
+import { FontColors, MainColors } from "@/constants/colors";
 import { Dimensions, View, Text } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 
@@ -23,7 +24,7 @@ export default function SleepChart({ labels, data }: Props) {
                 alignSelf: "center",
                 // 影をつけてカードっぽくする場合（お好みで）
                 elevation: 3,
-                shadowColor: "#000",
+                shadowColor: "#c7c7c7",
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
@@ -32,13 +33,12 @@ export default function SleepChart({ labels, data }: Props) {
             <Text
                 style={{
                     fontSize: 18,
-                    fontWeight: "bold",
                     marginVertical: 16,
                     textAlign: "center",
-                    color: "#3CBDF4",
+                    color: FontColors.title,
                 }}
             >
-                本日の睡眠グラフ
+                今回
             </Text>
             <LineChart
                 data={{
@@ -58,10 +58,10 @@ export default function SleepChart({ labels, data }: Props) {
                 withOuterLines={true}
                 withVerticalLabels={false}
                 chartConfig={{
-                    backgroundGradientFrom: "#ffffff",
-                    backgroundGradientTo: "#ffffff",
-                    decimalPlaces: 0,
-                    color: (opacity = 1) => `rgba(60, 189, 244, ${opacity})`,
+                    fillShadowGradientFrom: "#fa9ada",
+                    fillShadowGradientTo: "#fa9ada",
+                    decimalPlaces: 0.3,
+                    color: (opacity = 1) => `rgba(250, 154, 218, ${opacity})`,
                     labelColor: () => "#333",
                 }}
                 formatYLabel={(value) => (Number(value) === 0 ? "深い" : "浅い")}
@@ -81,8 +81,8 @@ export default function SleepChart({ labels, data }: Props) {
                 paddingLeft: 35, // Y軸ラベルの幅に合わせる
                 paddingRight: 15, // paddingRightと連動させて右端を合わせる
             }}>
-                <Text style={{ color: '#999', fontSize: 12, top: -20 }}>{labels[0]}</Text>
-                <Text style={{ color: '#999', fontSize: 12, top: -20 }}>{labels[labels.length - 1]}</Text>
+                <Text style={{ color: FontColors.title, fontSize: 12, top: -20 }}>{labels[0]}</Text>
+                <Text style={{ color: FontColors.title, fontSize: 12, top: -20 }}>{labels[labels.length - 1]}</Text>
             </View>
         </View>
     );

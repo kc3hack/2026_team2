@@ -163,7 +163,7 @@ export default function Settings() {
         alignItems: "center",
         paddingTop: 108,
         paddingHorizontal: 24,
-        gap: 24,
+        gap: 45,
       }}
     >
       <Title>設定</Title>

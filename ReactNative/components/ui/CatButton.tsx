@@ -15,7 +15,8 @@ export default function CatButton({ children, onPress, disabled }: Props) {
       onPress={onPress}
       disabled={disabled}
       style={{
-        backgroundColor: disabled ? BtnColors.disabled : "#FFFFFF",
+        backgroundColor: "#FFFFFF",
+        opacity: disabled ? 0.5 : 1,
         alignSelf: "center",
         width: 180,
         height: 180,
@@ -23,6 +24,7 @@ export default function CatButton({ children, onPress, disabled }: Props) {
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
+        marginTop: -70
       }}
     >
       <Text
@@ -34,7 +36,7 @@ export default function CatButton({ children, onPress, disabled }: Props) {
       >
         {children}
       </Text>
-      <MaterialCommunityIcons name="paw" size={90} color="#FF86D7" />
+      <MaterialCommunityIcons name="paw" size={90} color="#fa9ada" />
     </Pressable>
   );
 }
