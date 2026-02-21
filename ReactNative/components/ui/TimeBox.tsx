@@ -7,7 +7,7 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native";
-import { MAINCOLORS, FontColors } from "@/constants/colors";
+import { MainColors, FontColors } from "@/constants/colors";
 
 const HOURS = Array.from({ length: 24 }, (_, i) =>
   i.toString().padStart(2, "0"),
@@ -99,7 +99,7 @@ export default function TimeBox({
             alignItems: "center",
             gap: 12,
             borderWidth: 1,
-            borderColor: MAINCOLORS.border,
+            borderColor: MainColors.border,
             borderRadius: 24,
             overflow: editing ? "visible" : "hidden",
           }}
@@ -146,7 +146,7 @@ export default function TimeBox({
           <Pressable onPress={handleConfirm} style={{ marginTop: 40 }}>
             <Text
               style={{
-                color: MAINCOLORS.border,
+                color: MainColors.border,
                 fontSize: 18,
                 fontWeight: "600",
                 padding: 10,

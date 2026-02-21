@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import { useState, useEffect } from "react";
-import { MAINCOLORS } from "@/constants/colors";
+import { MainColors } from "@/constants/colors";
 import SleepChart from "@/components/ui/SleepChart";
 import Title from "@/components/ui/title";
 import Papa from "papaparse";
@@ -51,7 +51,6 @@ export default function Data() {
     <View
       style={{
         flex: 1,
-        backgroundColor: MAINCOLORS.Background,
         alignItems: "center",
         paddingTop: 108,
         gap: 24,

@@ -1,6 +1,6 @@
 import { View, Text, Alert, ScrollView, Pressable } from "react-native";
 import { useState, useContext } from "react";
-import { MAINCOLORS, FontColors } from "@/constants/colors";
+import { MainColors, FontColors } from "@/constants/colors";
 import Title from "@/components/ui/title";
 import { SettingItem, SettingSection } from "@/components/ui/Setting";
 import { useSerialPort } from "@/hooks/useSerialPort";
@@ -159,7 +159,6 @@ export default function Settings() {
     <View
       style={{
         flex: 1,
-        backgroundColor: MAINCOLORS.Background,
         // justifyContent: "center",
         alignItems: "center",
         paddingTop: 108,
@@ -192,7 +191,7 @@ export default function Settings() {
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 3,
-                backgroundColor: MAINCOLORS.border,
+                backgroundColor: MainColors.border,
                 paddingHorizontal: 4,
                 borderRadius: 8,
               }}
@@ -250,7 +249,7 @@ export default function Settings() {
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 6,
-                backgroundColor: MAINCOLORS.border,
+                backgroundColor: MainColors.border,
                 paddingHorizontal: 8,
                 borderRadius: 8,
               }}
