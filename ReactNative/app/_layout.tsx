@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import { Platform } from "react-native";
 import Constants, { ExecutionEnvironment } from "expo-constants";
 import { AlarmAudioProvider } from "@/contexts/AlarmAudioContext";
+import { AlarmMonitorProvider } from "@/contexts/AlarmMonitorContext";
 
 const DummySerialPortProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -30,14 +31,18 @@ export default function RootLayout() {
     return (
       <SerialPortProvider>
         <AlarmAudioProvider>
-          <Stack screenOptions={{ headerShown: false }} />
+          <AlarmMonitorProvider>
+            <Stack screenOptions={{ headerShown: false }} />
+          </AlarmMonitorProvider>
         </AlarmAudioProvider>
       </SerialPortProvider>
     );
   } else {
     return (
       <AlarmAudioProvider>
-        <Stack screenOptions={{ headerShown: false }} />
+        <AlarmMonitorProvider>
+          <Stack screenOptions={{ headerShown: false }} />
+        </AlarmMonitorProvider>
       </AlarmAudioProvider>
     );
   }

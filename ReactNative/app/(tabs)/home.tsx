@@ -1,16 +1,24 @@
 import { View } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useContext } from "react";
 import Button from "@/components/ui/Button";
 import TimeBox from "@/components/ui/TimeBox";
 import { MAINCOLORS } from "@/constants/colors";
 import Title from "@/components/ui/title";
-import { useAlarmMonitor } from "@/hooks/useAlarmMonitor";
+import { AlarmMonitorContext } from "@/contexts/AlarmMonitorContext";
 import { useAlarmAudio } from "@/hooks/useAlarmAudio";
 
 export default function Home() {
-  const [time, setTime] = useState("09:00");
-  const { isMonitoring, isAlarmActive, setIsReset } = useAlarmMonitor(time);
+  const alarmMonitor = useContext(AlarmMonitorContext);
   const { setVolume } = useAlarmAudio();
+
+  if (!alarmMonitor) {
+    throw new Error(
+      "AlarmMonitorContext must be used within AlarmMonitorProvider",
+    );
+  }
+
+  const { isMonitoring, isAlarmActive, reset, setTargetTime, targetTime } =
+    alarmMonitor;
 
   useEffect(() => {
     if (isAlarmActive && isMonitoring) {
@@ -36,13 +44,13 @@ export default function Home() {
       <Title>Home</Title>
       <TimeBox
         onConfirm={(t) => {
-          setTime(t);
+          setTargetTime(t);
         }}
       />
       <Button
         disabled={!isMonitoring}
         onPress={() => {
-          setIsReset(true);
+          reset();
         }}
       >
         stop

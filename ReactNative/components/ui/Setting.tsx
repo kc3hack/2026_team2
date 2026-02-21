@@ -50,7 +50,7 @@ export function SettingItem({
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          paddingHorizontal: 12,
+          paddingHorizontal: 6,
           paddingVertical: 6,
           gap: 12,
           borderWidth: 2,
