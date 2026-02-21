@@ -80,13 +80,11 @@ export default function Home() {
         disabled={!isMonitoring}
         onPress={() => {
           reset();
+          trySendData("0x32");
         }}
       >
         stop
       </Button>
     </View>
   );
-}
-function trySendData(arg0: string) {
-  throw new Error("Function not implemented.");
 }

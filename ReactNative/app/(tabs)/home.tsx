@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { useEffect, useContext } from "react";
 import Button from "@/components/ui/Button";
 import TimeBox from "@/components/ui/TimeBox";
@@ -7,13 +7,16 @@ import Title from "@/components/ui/title";
 import { AlarmMonitorContext } from "@/contexts/AlarmMonitorContext";
 import { useAlarmAudio } from "@/hooks/useAlarmAudio";
 import { sendWakeUpData } from "@/services/sendWakeUpDataService";
+import { fetchAndSaveAlarmData } from "@/services/alarmService";
+import { useSerialPort } from "@/hooks/useSerialPort";
 
 export default function Home() {
   // 💡 Contextから監視状態を取得
   const alarmMonitor = useContext(AlarmMonitorContext);
+  const { trySendData } = useSerialPort();
 
   // 💡 AI設定値（Music, Pitch, Speed）と音量制御を取得
-  const { setVolume } = useAlarmAudio();
+  const { setVolume, loadAudio } = useAlarmAudio();
 
   // Contextが存在しない場合のガード
   if (!alarmMonitor) {
@@ -49,6 +52,12 @@ export default function Home() {
       await sendWakeUpData(wakeUpSeconds);
 
       console.log("--- 送信完了！ ---");
+
+      // サーバーからデータを取得してキャッシュに保存
+      await fetchAndSaveAlarmData();
+
+      // 音声ファイルをリロード
+      await loadAudio();
     } catch (error) {
       console.error("送信に失敗しました:", error);
     }
@@ -81,14 +90,21 @@ export default function Home() {
           setTargetTime(t);
         }}
       />
-      <Button
-        disabled={!isMonitoring}
+      <Pressable
         onPress={() => {
-          handleWakeUp();
+          trySendData("0x32");
         }}
       >
-        stop
-      </Button>
+        <Button
+          disabled={!isMonitoring}
+          onPress={() => {
+            handleWakeUp();
+            trySendData("0x32");
+          }}
+        >
+          stop
+        </Button>
+      </Pressable>
     </View>
   );
 }
