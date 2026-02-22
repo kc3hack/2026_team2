@@ -191,7 +191,6 @@ export default function Settings() {
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 3,
-                backgroundColor: MainColors.border,
                 paddingHorizontal: 4,
                 borderRadius: 8,
               }}
@@ -206,7 +205,7 @@ export default function Settings() {
               >
                 <Text
                   style={{
-                    color: FontColors.maincolors,
+                    color: "#ffffff",
                     fontSize: 20,
                     fontWeight: "600",
                   }}
@@ -216,7 +215,7 @@ export default function Settings() {
               </Pressable>
               <Text
                 style={{
-                  color: FontColors.maincolors,
+                  color: "#ffffff",
                   fontSize: 16,
                   fontWeight: "600",
                 }}
@@ -233,7 +232,7 @@ export default function Settings() {
               >
                 <Text
                   style={{
-                    color: FontColors.maincolors,
+                    color: "#ffffff",
                     fontSize: 20,
                     fontWeight: "600",
                   }}
@@ -249,7 +248,6 @@ export default function Settings() {
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 6,
-                backgroundColor: MainColors.border,
                 paddingHorizontal: 8,
                 borderRadius: 8,
               }}
@@ -264,7 +262,7 @@ export default function Settings() {
               >
                 <Text
                   style={{
-                    color: FontColors.maincolors,
+                    color: "#ffffff",
                     fontSize: 20,
                     fontWeight: "600",
                   }}
@@ -274,7 +272,7 @@ export default function Settings() {
               </Pressable>
               <Text
                 style={{
-                  color: FontColors.maincolors,
+                  color: "#ffffff",
                   fontSize: 16,
                   fontWeight: "600",
                 }}
