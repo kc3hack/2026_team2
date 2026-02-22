@@ -1,6 +1,6 @@
-export const MAINCOLORS = {
-  Background: "#102A43",
-  border: "#5C85A2",
+export const MainColors = {
+  Background: "#DBA959",
+  border: "#ffffff",
 };
 
 export const BtnColors = {
@@ -11,4 +11,5 @@ export const BtnColors = {
 export const FontColors = {
   maincolors: "#FFFFFF",
   disabled: "#A9A9A9",
+  title: "#765013",
 };

@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
-import { FontColors, MAINCOLORS } from "@/constants/colors";
+import { FontColors, MainColors } from "@/constants/colors";
 
 export type SettingSectionProps = {
   title: string;
@@ -26,7 +26,7 @@ export function SettingSection({ title, children }: SettingSectionProps) {
       <Text
         style={{
           fontSize: 18,
-          color: FontColors.maincolors,
+          color: FontColors.title,
         }}
       >
         {title}
@@ -54,7 +54,7 @@ export function SettingItem({
           paddingVertical: 6,
           gap: 12,
           borderWidth: 2,
-          borderColor: MAINCOLORS.border,
+          borderColor: MainColors.border,
           borderRadius: 12,
         }}
       >

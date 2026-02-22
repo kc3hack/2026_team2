@@ -1,8 +1,8 @@
 import { Pressable, View } from "react-native";
 import { useEffect, useContext } from "react";
-import Button from "@/components/ui/Button";
+import CatButton from "@/components/ui/CatButton";
 import TimeBox from "@/components/ui/TimeBox";
-import { MAINCOLORS } from "@/constants/colors";
+import { MainColors } from "@/constants/colors";
 import Title from "@/components/ui/title";
 import { AlarmMonitorContext } from "@/contexts/AlarmMonitorContext";
 import { useAlarmAudio } from "@/hooks/useAlarmAudio";
@@ -81,7 +81,7 @@ export default function Home() {
     <View
       style={{
         flex: 1,
-        backgroundColor: MAINCOLORS.Background,
+        backgroundColor: MainColors.Background,
         // justifyContent: "center",
         alignItems: "center",
         paddingTop: 108,
@@ -112,7 +112,7 @@ export default function Home() {
           }}
         />
       </Pressable>
-      <Button
+      <CatButton
         disabled={!isMonitoring}
         onPress={() => {
           reset();
@@ -120,8 +120,8 @@ export default function Home() {
           trySendData("0x32");
         }}
       >
-        stop
-      </Button>
+        STOP
+      </CatButton>
     </View>
   );
 }
