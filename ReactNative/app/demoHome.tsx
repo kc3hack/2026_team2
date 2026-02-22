@@ -7,11 +7,13 @@ import Title from "@/components/ui/title";
 import { AlarmMonitorContext } from "@/contexts/AlarmMonitorContext";
 import { useAlarmAudio } from "@/hooks/useAlarmAudio";
 import { useSerialPort } from "@/hooks/useSerialPort";
+import { sendWakeUpData } from "@/services/sendWakeUpDataService";
+import { fetchAndSaveAlarmData } from "@/services/alarmService";
 
 export default function Home() {
   const alarmMonitor = useContext(AlarmMonitorContext);
   const { trySendData } = useSerialPort();
-  const { setVolume } = useAlarmAudio();
+  const { setVolume, loadAudio } = useAlarmAudio();
 
   if (!alarmMonitor) {
     throw new Error(
@@ -31,6 +33,40 @@ export default function Home() {
       setVolume(0);
     }
   }, [isMonitoring, isAlarmActive, setVolume]);
+
+  const handleWakeUp = async () => {
+    // 💡 Contextのreset関数を使用してアラームを停止
+    reset();
+    console.log("アラームを停止しました");
+
+    try {
+      const startDate = new Date();
+      const [targetHour, targetMinute] = targetTime.split(":").map(Number);
+      startDate.setHours(targetHour);
+      startDate.setMinutes(targetMinute - 30); // 30分前に設定
+      startDate.setSeconds(0);
+
+      const wakeUpDate = new Date();
+      let wakeUpSeconds = Math.floor(
+        (wakeUpDate.getTime() - startDate.getTime()) / 1000,
+      );
+
+      console.log(`起床までの時間: ${wakeUpSeconds} 秒`);
+
+      // Context/Hookから取得した現在の設定値を引数に渡す
+      await sendWakeUpData(wakeUpSeconds);
+
+      console.log("--- 送信完了！ ---");
+
+      // サーバーからデータを取得してキャッシュに保存
+      await fetchAndSaveAlarmData();
+
+      // 音声ファイルをリロード
+      await loadAudio();
+    } catch (error) {
+      console.error("送信に失敗しました:", error);
+    }
+  };
 
   const handleSendData = async () => {
     try {
@@ -80,6 +116,7 @@ export default function Home() {
         disabled={!isMonitoring}
         onPress={() => {
           reset();
+          handleWakeUp();
           trySendData("0x32");
         }}
       >
