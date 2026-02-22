@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import { useState, useEffect } from "react";
-import { MAINCOLORS } from "@/constants/colors";
+import { FontColors, MainColors } from "@/constants/colors";
 import SleepChart from "@/components/ui/SleepChart";
 import Title from "@/components/ui/title";
 import Papa from "papaparse";
@@ -51,7 +51,6 @@ export default function Data() {
     <View
       style={{
         flex: 1,
-        backgroundColor: MAINCOLORS.Background,
         alignItems: "center",
         paddingTop: 108,
         gap: 24,
@@ -62,7 +61,7 @@ export default function Data() {
     {sleepData.length > 0 && labels.length > 0 ? (
       <SleepChart labels={labels} data={sleepData} />
     ) : (
-      <Text style={{ color: "#3CBDF4", fontSize: 12, marginTop: 130 }}>
+      <Text style={{ color: FontColors.title, fontSize: 12, marginTop: 170 }}>
           データがありません
       </Text>
     )}
